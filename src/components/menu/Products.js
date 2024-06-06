@@ -3,151 +3,11 @@ import { Button, Card, CardGroup, Col, Form, Modal, Row } from "react-bootstrap"
 import CartContext from "../../context/CartContext";
 import axios from "axios";
 
-const _products = [
-  {
-    id: 0,
-    category: "cold_drinks",
-    name: "Freddo Espresso",
-    price: 2.0,
-    extras: [
-      {
-        name: "sugar",
-        label: "Sugar",
-        type: "multiple_choice",
-        options: [
-          { label: "Black", value: 0 },
-          { label: "A bit", value: 1 },
-          { label: "Medium", value: 2 },
-          { label: "Sweet", value: 3 },
-        ],
-        cost: 0,
-        showValue: true,
-        required: true,
-      },
-      {
-        name: "size",
-        label: "Size",
-        type: "multiple_choice",
-        options: [
-          { label: "Regular", value: 0, cost: 0, showValue: false },
-          { label: "XLarge", value: 1, cost: 1, showValue: true },
-        ],
-        cost: 0,
-        showValue: false,
-        required: true,
-      },
-      {
-        name: "variety",
-        label: "Variety",
-        type: "multiple_choice",
-        options: [
-          { label: "House blend (100% Arabica)", value: 0, cost: 0, showValue: false },
-          { label: "Ethiopia Murago", value: 1, cost: 0.5, showValue: true },
-          { label: "El Salvador Hermanos Menas", value: 2, cost: 0.5, showValue: true },
-          { label: "Guatemala Santa Rita", value: 3, cost: 0.5, showValue: true },
-          { label: "Colombia Tumbaga (Decaf)", value: 4, cost: 0.5, showValue: true },
-        ],
-        cost: 0,
-        showValue: false,
-        required: true,
-      },
-      {
-        name: "decaf",
-        label: "Decaffeinated",
-        type: "switch",
-        cost: 0.2,
-        showValue: false,
-        required: false,
-      },
-      {
-        name: "milk",
-        label: "Fresh milk",
-        type: "checkbox",
-        cost: 0.1,
-        showValue: false,
-        required: false,
-      },
-      {
-        name: "plant_milk",
-        label: "Plant milk",
-        type: "checkbox",
-        cost: 0.5,
-        showValue: false,
-        required: false,
-      },
-    ],
-  },
-  { id: 1, category: "cold_drinks", name: "Frappe", price: 2.5 },
-  {
-    id: 2,
-    category: "hot_drinks",
-    name: "Flat White",
-    price: 2.2,
-    extras: [
-      {
-        name: "sugar",
-        label: "Sugar",
-        type: "multiple_choice",
-        options: [
-          { label: "Black", value: 0 },
-          { label: "A bit", value: 1 },
-          { label: "Medium", value: 2 },
-          { label: "Sweet", value: 3 },
-        ],
-        cost: 0,
-        showValue: true,
-        required: true,
-      },
-      {
-        name: "size",
-        label: "Size",
-        type: "multiple_choice",
-        options: [
-          { label: "Regular", value: 0, cost: 0, showValue: false },
-          { label: "XLarge", value: 1, cost: 1, showValue: true },
-        ],
-        cost: 0,
-        showValue: false,
-        required: true,
-      },
-      {
-        name: "decaf",
-        label: "Decaffeinated",
-        type: "switch",
-        cost: 0.2,
-        showValue: false,
-        required: false,
-      },
-      {
-        name: "milk",
-        label: "Fresh milk",
-        type: "checkbox",
-        cost: 0.1,
-        showValue: false,
-        required: false,
-      },
-      {
-        name: "plant_milk",
-        label: "Plant milk",
-        type: "checkbox",
-        cost: 0.5,
-        showValue: false,
-        required: false,
-      },
-    ],
-  },
-  { id: 3, category: "cold_drinks", name: "Iced Espresso", price: 4 },
-  { id: 4, category: "hot_drinks", name: "Latte", price: 4.5 },
-  { id: 5, category: "hot_drinks", name: "Espresso", price: 3.5 },
-  { id: 6, category: "wraps", name: "Chicken Wrap", price: 6.5 },
-  { id: 7, category: "wraps", name: "Veggie Wrap", price: 5.5 },
-  { id: 8, category: "pastries", name: "Croissant", price: 2.5 },
-  { id: 9, category: "pastries", name: "Muffin", price: 2.0 },
-];
-
 const Products = (props) => {
   const [products, setProducts] = React.useState([]);
   const [extras, setExtras] = React.useState([]);
+
+  const currCategory = props.category?._id;
 
   useEffect(() => {
     axios.get("https://pos-backend-356y.onrender.com/products").then((res) => {
@@ -220,12 +80,12 @@ const Products = (props) => {
   }, [currProduct]);
 
   const productsMap = products?.map((product, idx) => {
-    if (product.category === props.category) {
+    if (product.category === currCategory) {
       return (
         <Col key={product.name}>
           <Card
             style={{ height: "130px" }}
-            key={product.name}
+            key={product._id}
             onClick={() => {
               // handleAddToCart(product);
               setCurrProduct(product._id);
@@ -240,6 +100,8 @@ const Products = (props) => {
           </Card>
         </Col>
       );
+    } else {
+      return null;
     }
   });
 

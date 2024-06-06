@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Products from "./Products";
 
 const Categories = (props) => {
   const [currKey, setCurrKey] = React.useState("cold_coffees");
 
+  const [currCategory, setCurrCategory] = React.useState({}); // [product, setProduct
+
   const categories = props.categories;
-  const currCategory = categories.filter((category) => category.name === currKey);
+
+  useEffect(() => {
+    setCurrCategory(categories.filter((category) => category.name === currKey)[0]);
+  }, [currKey]);
 
   const categoriesMap = categories.map((category) => {
     return (
@@ -30,7 +35,7 @@ const Categories = (props) => {
       >
         {categoriesMap}
       </Nav>
-      <Products category={currCategory[0]?._id} />
+      <Products category={currCategory} />
     </div>
   );
 };

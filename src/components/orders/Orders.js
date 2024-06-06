@@ -38,7 +38,7 @@ const Orders = (props) => {
     const amount = order.order.total;
 
     if (order.status !== "COMPLETED") {
-      return <Order source={orderSource} oid={orderId} type={type} status={order.status} deliveryBoy={order.deliveryBoy} idx={idx} key={`order-${orderStatus}-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
+      return <Order source={orderSource} oid={orderId} type={type} status={order.status} deliveryBoy={order.deliveryBoy} idx={idx} key={`order-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
     } else {
       return <></>;
     }
@@ -57,7 +57,7 @@ const Orders = (props) => {
     const amount = order.order.total;
 
     if (order.status === "COMPLETED" || order.status === "CANCELLED") {
-      return <Order source={orderSource} oid={orderId} type={type} deliveryBoy={order.deliveryBoy} status={order.status} idx={idx} key={`order-${orderStatus}-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
+      return <Order source={orderSource} oid={orderId} type={type} deliveryBoy={order.deliveryBoy} status={order.status} idx={idx} key={`order-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
     } else {
       return <></>;
     }
@@ -91,7 +91,7 @@ const Orders = (props) => {
           </Nav.Item>
         </Nav>
 
-        <div style={{ maxHeight: "75vh", overflowY: "hidden" }}>{currKey === "active_orders" ? activeOrdersMap : currKey === "past_orders" ? pastOrdersMap : ""}</div>
+        <div style={{ maxHeight: "75vh", overflowY: "scroll" }}>{currKey === "active_orders" ? activeOrdersMap : currKey === "past_orders" ? pastOrdersMap : ""}</div>
       </div>
     </div>
   );
