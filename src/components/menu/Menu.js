@@ -6,7 +6,7 @@ const Menu = (props) => {
   const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/categories").then((res) => {
+    axios.get("https://pos-backend-356y.onrender.com/categories").then((res) => {
       setCategories(res.data);
     });
   }, []);

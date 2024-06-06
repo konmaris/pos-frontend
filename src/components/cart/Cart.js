@@ -45,7 +45,7 @@ const Cart = (props) => {
 
     //console.log({ order: order });
 
-    axios.post("http://localhost:8000/orders", order).then((response) => {
+    axios.post("https://pos-backend-356y.onrender.com/orders", order).then((response) => {
       //console.log(response.status, response.data);
     });
   };
@@ -220,7 +220,7 @@ const Cart = (props) => {
               <Button
                 onClick={async () => {
                   await axios
-                    .get(`http://localhost:8000/customers/${tempCustomer.telephone}`)
+                    .get(`https://pos-backend-356y.onrender.com/customers/${tempCustomer.telephone}`)
                     .then((res) => {
                       // //console.log(res.data);
 

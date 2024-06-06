@@ -8,7 +8,7 @@ const CartProvider = ({ children }) => {
   // fetch orders using axios
   const fetchOrders = async () => {
     await axios
-      .get("http://localhost:8000/orders/current")
+      .get("https://pos-backend-356y.onrender.com/orders/current")
       .then((res) => {
         setOrders(res?.data?.reverse());
       })

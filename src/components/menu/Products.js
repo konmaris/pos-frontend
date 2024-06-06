@@ -150,11 +150,11 @@ const Products = (props) => {
   const [extras, setExtras] = React.useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/products").then((res) => {
+    axios.get("https://pos-backend-356y.onrender.com/products").then((res) => {
       setProducts(res.data);
     });
 
-    axios.get("http://localhost:8000/extras").then((res) => {
+    axios.get("https://pos-backend-356y.onrender.com/extras").then((res) => {
       setExtras(res.data);
       //console.log(res.data);
     });

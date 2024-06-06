@@ -19,7 +19,7 @@ const Order = (props) => {
 
   const fetchDeliveryBoys = () => {
     //use axios
-    axios.get("http://localhost:8000/deliveryBoys").then((res) => {
+    axios.get("https://pos-backend-356y.onrender.com/deliveryBoys").then((res) => {
       setDeliveryBoys(res.data);
       //console.log(res.data);
 
@@ -122,13 +122,13 @@ const Order = (props) => {
         onClick={() => {
           if (orderStatus !== orderStatuses.COMPLETED && orderStatus !== orderStatuses.CANCELLED) {
             if (orderStatus === orderStatuses.ASSIGNED) {
-              axios.put(`http://localhost:8000/orders/status`, {
+              axios.put(`https://pos-backend-356y.onrender.com/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.DELIVERED,
               });
               // setOrderStatus(orderStatuses.DELIVERED);
             } else if (orderStatus === orderStatuses.DELIVERED) {
-              axios.put(`http://localhost:8000/orders/status`, {
+              axios.put(`https://pos-backend-356y.onrender.com/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.COMPLETED,
               });

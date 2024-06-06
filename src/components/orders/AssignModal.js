@@ -10,7 +10,7 @@ const AssignModal = (props) => {
   const handleAssign = () => {
     // use axios to put order to change the delivery boy
     axios
-      .put(`http://localhost:8000/orders/assign`, {
+      .put(`https://pos-backend-356y.onrender.com/orders/assign`, {
         orderId: props.orderId,
         deliveryBoyId: delBoy,
       })
@@ -20,7 +20,7 @@ const AssignModal = (props) => {
       });
 
     axios
-      .put(`http://localhost:8000/orders/status`, {
+      .put(`https://pos-backend-356y.onrender.com/orders/status`, {
         orderId: props.orderId,
         status: "ASSIGNED",
       })

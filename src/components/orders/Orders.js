@@ -12,7 +12,7 @@ const Orders = (props) => {
   const [deliveryBoys, setDeliveryBoys] = React.useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/deliveryBoys").then((res) => {
+    axios.get("https://pos-backend-356y.onrender.com/deliveryBoys").then((res) => {
       setDeliveryBoys(res.data);
     });
   }, []);
