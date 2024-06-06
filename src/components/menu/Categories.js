@@ -3,14 +3,15 @@ import Nav from "react-bootstrap/Nav";
 import Products from "./Products";
 
 const Categories = (props) => {
-  const [currKey, setCurrKey] = React.useState("cold_drinks");
+  const [currKey, setCurrKey] = React.useState("cold_coffees");
 
   const categories = props.categories;
+  const currCategory = categories.filter((category) => category.name === currKey);
 
   const categoriesMap = categories.map((category) => {
     return (
-      <Nav.Item key={category.eKey}>
-        <Nav.Link eventKey={category.eKey}>{category.label.toUpperCase()}</Nav.Link>
+      <Nav.Item key={category.name}>
+        <Nav.Link eventKey={category.name}>{category.label.toUpperCase()}</Nav.Link>
       </Nav.Item>
     );
   });
@@ -29,7 +30,7 @@ const Categories = (props) => {
       >
         {categoriesMap}
       </Nav>
-      <Products category={currKey} />
+      <Products category={currCategory[0]?._id} />
     </div>
   );
 };

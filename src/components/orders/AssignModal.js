@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { Form, Modal, Button } from "react-bootstrap";
 
@@ -7,9 +8,30 @@ const AssignModal = (props) => {
   };
 
   const handleAssign = () => {
-    props.setDeliveryBoy(delBoy);
-    props.setOrderStatus("ASSIGNED");
+    // use axios to put order to change the delivery boy
+    axios
+      .put(`http://localhost:8000/orders/assign`, {
+        orderId: props.orderId,
+        deliveryBoyId: delBoy,
+      })
+      .then((res) => {})
+      .catch((err) => {
+        //console.log(err);
+      });
+
+    axios
+      .put(`http://localhost:8000/orders/status`, {
+        orderId: props.orderId,
+        status: "ASSIGNED",
+      })
+      .then((res) => {})
+      .catch((err) => {
+        //console.log(err);
+      });
+
     props.setShow(false);
+    // props.setOrderStatus("ASSIGNED");
+    // fetchOrders();
   };
 
   const [delBoy, setDelBoy] = React.useState("");
@@ -27,14 +49,14 @@ const AssignModal = (props) => {
               return (
                 <Form.Check
                   onClick={(e) => {
-                    setDelBoy(db.name);
+                    //console.log(db._id);
+                    setDelBoy(db._id);
                   }}
                   inline
-                  key={db.id}
+                  key={db._id}
+                  name="group1"
                   type="radio"
                   label={db.name}
-                  name={db.name}
-                  id={db.id}
                 />
               );
             })}

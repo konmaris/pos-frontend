@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import Categories from "./Categories";
 
 const Menu = (props) => {
-  const categories = [
-    { eKey: "cold_drinks", label: "Cold Drinks" },
-    { eKey: "hot_drinks", label: "Hot Drinks" },
-    { eKey: "wraps", label: "Wraps" },
-    { eKey: "pastries", label: "Pastries" },
-  ];
+  const [categories, setCategories] = React.useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/categories").then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
+
   return (
     <div className={props.className} style={props.style}>
       <h2 className="mb-4">Menu</h2>

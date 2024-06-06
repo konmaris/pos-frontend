@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { Button, Card, CardGroup, Col, Form, Modal, Row } from "react-bootstrap";
 import CartContext from "../../context/CartContext";
+import axios from "axios";
 
-const products = [
+const _products = [
   {
     id: 0,
     category: "cold_drinks",
@@ -145,8 +146,23 @@ const products = [
 ];
 
 const Products = (props) => {
+  const [products, setProducts] = React.useState([]);
+  const [extras, setExtras] = React.useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/products").then((res) => {
+      setProducts(res.data);
+    });
+
+    axios.get("http://localhost:8000/extras").then((res) => {
+      setExtras(res.data);
+      //console.log(res.data);
+    });
+  }, []);
+
   const { cart, setCart } = React.useContext(CartContext);
   const [currProduct, setCurrProduct] = React.useState({}); // [product, setProduct
+  const [currProductObj, setCurrProductObj] = React.useState({}); // [product, setProduct
 
   /* MODAL */
   const [show, setShow] = React.useState(false);
@@ -162,110 +178,126 @@ const Products = (props) => {
   const handleShow = () => setShow(true);
 
   const handleAddToCart = (product) => {
+    //console.log("product", product);
     const newItems = [...cart.items];
 
     //calculate cost of extras
     let extrasCost = 0;
+    //console.log("currProductExtras", currProductExtras);
     currProductExtras.forEach((extra) => {
-      const extraName = Object.keys(extra)[0];
+      const extraName = extra.name;
 
-      if (extra[extraName].value) {
-        extrasCost += extra[extraName].cost;
-      }
-      console.log({ extraCost: extrasCost });
+      extrasCost += extra.optionPrice;
+
+      //console.log({ extraCost: extrasCost });
     });
 
-    // console.log("extrasCost", extrasCost);
+    // //console.log("extrasCost", extrasCost);
 
-    const product_ = { ...product, extras: currProductExtras, price: product.price + extrasCost };
+    const product_ = { ...product, extras: currProductExtras, price: product.price + extrasCost, id: product._id };
+    delete product_._id;
+    delete product_.__v;
+
     newItems.push(product_);
     setCart({ items: newItems, total: cart.total + product_.price });
     setCurrProductExtras([]);
     setCurrProduct(null);
   };
 
-  const category = props.category;
-
-  const categoryProducts = products.filter((product) => {
-    return product.category === category;
-  });
-
-  const productsMap = categoryProducts.map((product, idx) => {
-    return (
-      <Col key={product.name}>
-        <Card
-          style={{ height: "130px" }}
-          key={product.name}
-          onClick={() => {
-            // handleAddToCart(product);
-            setCurrProduct(product.id);
-            handleShow();
-          }}
-        >
-          {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
-          <Card.Body>
-            <Card.Title style={{ height: "70%" }}>{product.name}</Card.Title>
-            <Card.Text>{product.price.toFixed(2)} €</Card.Text>
-          </Card.Body>
-        </Card>
-      </Col>
-    );
-  });
-
   useEffect(() => {
-    console.log(currProductExtras);
-  }, [currProductExtras]);
+    const _product = products.filter((product) => product._id === currProduct)[0];
+    // //console.log(currProductObj);
+
+    const _extras = _product?.extras?.map((extra) => {
+      return extras.find((extra_) => extra_._id === extra);
+    });
+
+    //console.log(_extras);
+
+    const _currObj = { ..._product, extras: _extras };
+
+    setCurrProductObj(_currObj);
+  }, [currProduct]);
+
+  const productsMap = products?.map((product, idx) => {
+    if (product.category === props.category) {
+      return (
+        <Col key={product.name}>
+          <Card
+            style={{ height: "130px" }}
+            key={product.name}
+            onClick={() => {
+              // handleAddToCart(product);
+              setCurrProduct(product._id);
+              handleShow();
+            }}
+          >
+            {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
+            <Card.Body>
+              <Card.Title style={{ height: "70%" }}>{product.name}</Card.Title>
+              <Card.Text>{product.price.toFixed(2)} €</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      );
+    }
+  });
 
   //using useEffect to check if all required extras are selected
   useEffect(() => {
-    let requiredExtras = products[currProduct]?.extras?.filter((extra) => {
-      return extra.required === true;
-    });
+    if (products) {
+      let requiredExtras = currProductObj?.extras?.filter((extra) => {
+        //console.log("extra", extra);
+        return extra.required === true;
+      });
 
-    // console.log(requiredExtras);
+      //console.log("required extras", requiredExtras);
 
-    let requiredExtrasNames = requiredExtras?.map((extra) => {
-      return extra.name;
-    });
+      let requiredExtrasNames = requiredExtras?.map((extra) => {
+        return extra.name;
+      });
 
-    let requiredExtrasValues = currProductExtras?.map((extra) => {
-      return Object.keys(extra)[0];
-    });
+      let currExtraNames = currProductExtras?.map((extra) => {
+        //console.log("extra2", extra);
+        return extra.optionName;
+      });
 
-    let missingRequiredExtras = requiredExtrasNames?.filter((requiredExtra) => {
-      return !requiredExtrasValues?.includes(requiredExtra);
-    });
+      //console.log("curr extra names", currExtraNames);
+      //console.log("required extra names", requiredExtrasNames);
 
-    console.log(missingRequiredExtras);
+      const extrasMatched = requiredExtrasNames?.every((val) => currExtraNames.includes(val));
+      //console.log(extrasMatched);
 
-    if (missingRequiredExtras?.length > 0 || missingRequiredExtras === undefined) {
-      setSaveButtonActive(false);
-    } else {
-      setSaveButtonActive(true);
+      if (extrasMatched) {
+        setSaveButtonActive(true);
+      } else {
+        setSaveButtonActive(false);
+      }
     }
-  }, [currProductExtras]);
+  }, [currProductExtras, products]);
 
-  const extrasRender = products[currProduct]?.extras?.map((extra) => {
+  const extrasRender = currProductObj?.extras?.map((extra) => {
     return (
       <div key={extra.name}>
         {extra.type === "multiple_choice" ? (
           <>
-            <Form.Label style={{ fontWeight: "600" }}>{extra.label}</Form.Label>
+            <Form.Label style={{ fontWeight: "600" }}>{extra.name}</Form.Label>
             <div key="inline-radio" className="mb-3">
               {extra.options.map((option) => {
                 return (
                   <Form.Check
                     onClick={(e) => {
                       setCurrProductExtras((prev) => {
+                        //console.log("prev", prev);
                         //filter out the previous extra with the same name
                         let prev_ = prev?.filter((prevExtra) => {
-                          return Object.keys(prevExtra)[0] !== extra.name;
+                          return prevExtra.optionName !== extra.name;
                         });
 
                         if (option?.cost > 0 || extra.cost > 0) {
-                          prev_.push({ [extra.name]: { optionLabel: option.label, value: option.value, label: extra.label, cost: option.cost, showValue: true } });
+                          prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: option.cost, optionShow: true });
                         } else {
-                          prev_.push({ [extra.name]: { optionLabel: option.label, value: option.value, label: extra.label, cost: extra.cost, showValue: extra.showValue } });
+                          prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
                         }
 
                         return prev_;
@@ -284,18 +316,19 @@ const Products = (props) => {
           </>
         ) : extra.type === "switch" ? (
           <>
-            <Form.Label style={{ fontWeight: "600" }}>{extra.label + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}</Form.Label>
+            <Form.Label style={{ fontWeight: "700" }}>{extra.name + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}</Form.Label>
             <Form.Check // prettier-ignore
               type="switch"
               id="custom-switch"
               onChange={(e) => {
-                console.log(e.target.checked);
+                //console.log(e.target.checked);
                 setCurrProductExtras((prev) => {
                   let prev_ = prev.filter((prevExtra) => {
-                    return Object.keys(prevExtra)[0] !== extra.name;
+                    //filter array based on optionName
+                    return prevExtra.optionName !== extra.label;
                   });
 
-                  prev_.push({ [extra.name]: { value: e.target.checked, label: extra.label, cost: extra.cost, showValue: extra.showValue } });
+                  prev_.push({ optionLabel: e.target.checked, optionValue: e.target.checked, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
                   return prev_;
                 });
               }}
@@ -306,22 +339,22 @@ const Products = (props) => {
     );
   });
 
-  const extrasCheckboxesRender = products[currProduct]?.extras?.map((extra) => {
+  const extrasCheckboxesRender = currProductObj?.extras?.map((extra) => {
     return (
       <div key={extra.name}>
         {extra.type === "checkbox" ? (
           <Form.Check
             type="checkbox"
-            label={extra.label + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
+            label={extra.name + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
             key={extra.name}
             onChange={(e) => {
               setCurrProductExtras((prev) => {
                 //filter out the previous extra with the same name, if it exists
                 let prev_ = prev.filter((prevExtra) => {
-                  return Object.keys(prevExtra)[0] !== extra.name;
+                  return prevExtra.optionName !== extra.label;
                 });
 
-                prev_.push({ [extra.name]: { value: e.target.checked, label: extra.label, cost: extra.cost, showValue: extra.showValue } });
+                prev_.push({ optionValue: e.target.checked, optionLabel: e.target.checked, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
                 return prev_;
               });
             }}
@@ -335,7 +368,7 @@ const Products = (props) => {
     <div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{products[currProduct]?.name}</Modal.Title>
+          <Modal.Title>{currProductObj?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -356,7 +389,7 @@ const Products = (props) => {
             variant="primary"
             disabled={!saveButtonActive}
             onClick={() => {
-              handleAddToCart(products[currProduct]);
+              handleAddToCart(currProductObj);
               handleClose();
             }}
           >

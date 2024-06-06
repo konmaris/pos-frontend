@@ -5,51 +5,98 @@ import { Badge } from "react-bootstrap";
 import OrdersContext from "../../context/OrdersContext";
 import AssignModal from "./AssignModal";
 import OrderModal from "./OrderModal";
+import axios from "axios";
 
-const deliveryBoys = ["Andreas", "Nikos", "Giannis"];
+// const deliveryBoys = ["Andreas", "Nikos", "Giannis"];
 
 const Order = (props) => {
+  const [deliveryBoys, setDeliveryBoys] = React.useState([]);
+  const [deliveryBoy, setDeliveryBoy] = React.useState("");
+
+  useEffect(() => {
+    fetchDeliveryBoys();
+  }, []);
+
+  const fetchDeliveryBoys = () => {
+    //use axios
+    axios.get("http://localhost:8000/deliveryBoys").then((res) => {
+      setDeliveryBoys(res.data);
+      //console.log(res.data);
+
+      const dbName = res.data.find((db) => db._id === props.deliveryBoy);
+
+      setDeliveryBoy(dbName?.name);
+    });
+  };
+
   const orderStatuses = {
-    NEW_ORDER: "NEW ORDER",
+    NEW_ORDER: "NEW_ORDER",
     ASSIGNED: "ASSIGNED",
-    DELIVERED: "ON THE ROAD",
+    DELIVERED: "DELIVERED",
     COMPLETED: "COMPLETED",
     CANCELLED: "CANCELLED",
   };
 
+  const getOrderStatusLabel = (status) => {
+    switch (status) {
+      case orderStatuses.NEW_ORDER:
+        return "New Order";
+      case orderStatuses.ASSIGNED:
+        return "Assigned";
+      case orderStatuses.DELIVERED:
+        return "Delivered";
+      case orderStatuses.COMPLETED:
+        return "Completed";
+      case orderStatuses.CANCELLED:
+        return "Cancelled";
+      default:
+        return "Unknown";
+    }
+  };
+
   const [orderStatus, setOrderStatus] = React.useState(props.status);
+  const [orderSource, setOrderSource] = React.useState(props.source);
   const [orderStatusColor, setOrderStatusColor] = React.useState("success");
+  const [orderSourceColor, setOrderSourceColor] = React.useState("success");
 
   const [assignShow, setAssignShow] = React.useState(false);
   const [orderShow, setOrderShow] = React.useState(false);
 
-  const [deliveryBoy, setDeliveryBoy] = React.useState(props.deliveryBoy);
-
-  const { orders, setOrders } = React.useContext(OrdersContext);
-
   useEffect(() => {
     setOrderStatusColor(getStatusColor(orderStatus));
-
-    const orders_ = [...orders];
-
-    orders_[props.idx].status = orderStatus;
-    orders_[props.idx].deliveryBoy = deliveryBoy;
-
-    setOrders(orders_);
   }, [orderStatus]);
+
+  useEffect(() => {
+    setOrderSourceColor(getSourceColor(orderSource));
+  }, [orderSource]);
 
   const getStatusColor = (status) => {
     switch (status) {
       case orderStatuses.NEW_ORDER:
-        return "#009a36";
+        return "#9a0000";
       case orderStatuses.ASSIGNED:
         return "#004a9a";
       case orderStatuses.DELIVERED:
         return "#9a008d";
       case orderStatuses.COMPLETED:
-        return "#000000";
+        return "#009a36";
       case orderStatuses.CANCELLED:
-        return "#9a0000";
+        return "#555555";
+      default:
+        return "secondary";
+    }
+  };
+
+  const getSourceColor = (source) => {
+    switch (source) {
+      case "telephone":
+        return "#121212";
+      case "efood":
+        return "#e03800";
+      case "wolt":
+        return "#00579a";
+      case "box":
+        return "#a06d00";
       default:
         return "secondary";
     }
@@ -75,29 +122,42 @@ const Order = (props) => {
         onClick={() => {
           if (orderStatus !== orderStatuses.COMPLETED && orderStatus !== orderStatuses.CANCELLED) {
             if (orderStatus === orderStatuses.ASSIGNED) {
-              setOrderStatus(orderStatuses.DELIVERED);
+              axios.put(`http://localhost:8000/orders/status`, {
+                orderId: props.oid,
+                status: orderStatuses.DELIVERED,
+              });
+              // setOrderStatus(orderStatuses.DELIVERED);
             } else if (orderStatus === orderStatuses.DELIVERED) {
-              setOrderStatus(orderStatuses.COMPLETED);
-            } else if (orderStatus === orderStatuses.COMPLETED) {
-              setOrderStatus(orderStatuses.CANCELLED);
+              axios.put(`http://localhost:8000/orders/status`, {
+                orderId: props.oid,
+                status: orderStatuses.COMPLETED,
+              });
+              // setOrderStatus(orderStatuses.COMPLETED);
             }
           }
         }}
         className="d-flex flex-column mb-3 border p-2 rounded"
       >
+        <></>
         <div className="d-flex flex-row w-100">
-          <span onClick={() => setOrderShow(true)} className="w-100" style={{ fontSize: 24, fontWeight: 700, margin: 0, height: "fit-content" }}>
-            #{String(props.orderNumber).padStart(3, "0")}
-          </span>
+          <div className="w-100 d-flex">
+            <span onClick={() => setOrderShow(true)} className="" style={{ fontSize: 24, fontWeight: 700, margin: 0, height: "fit-content" }}>
+              #{String(props.orderNumber).padStart(3, "0")}
+            </span>
+            <Badge pill bg="none" style={{ width: "fit-content", marginLeft: "5px", marginBottom: "0px", alignSelf: "center", backgroundColor: orderSourceColor, fontSize: "8px" }}>
+              {orderSource?.toUpperCase()}
+            </Badge>
+          </div>
           {orderStatus !== orderStatuses.CANCELLED && orderStatus !== orderStatuses.COMPLETED && <span style={{ margin: 0, marginRight: "5px", height: "fit-content", fontWeight: 600, fontSize: 22, color: minutesLeft > 0 ? "green" : "red" }}>{minutesLeft.toString().split(".")[0]}'</span>}
         </div>
 
         <span style={{ width: "100%", textAlign: "left", fontWeight: "300", marginBottom: "4px" }}>{orderTime}</span>
 
-        <Badge pill bg="none" style={{ width: "fit-content", marginBottom: "5px", backgroundColor: orderStatusColor }}>
-          {orderStatus}
-        </Badge>
-
+        <div>
+          <Badge pill bg="none" style={{ width: "fit-content", marginBottom: "5px", backgroundColor: orderStatusColor }}>
+            {getOrderStatusLabel(orderStatus).toUpperCase()}
+          </Badge>
+        </div>
         <div className="d-flex flex-row w-100">
           {props.type === "delivery" && (
             <span style={{ flex: "100", alignSelf: "center" }}>
@@ -109,7 +169,7 @@ const Order = (props) => {
             <span
               className="d-flex"
               onClick={() => {
-                console.log("assign clicked");
+                //console.log("assign clicked");
                 setAssignShow(true);
               }}
             >
@@ -121,14 +181,14 @@ const Order = (props) => {
         {orderStatus === orderStatuses.ASSIGNED && (
           <span className="d-flex">
             <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy.toUpperCase()}</span>
+            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0]?.toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
           </span>
         )}
 
         {orderStatus === orderStatuses.DELIVERED && (
           <span className="d-flex">
             <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy.toUpperCase()}</span>
+            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0].toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
           </span>
         )}
 
@@ -142,21 +202,11 @@ const Order = (props) => {
         {props.type === "delivery" && orderStatus === orderStatuses.COMPLETED && (
           <span className="d-flex">
             <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy.toUpperCase()}</span>
+            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0].toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
           </span>
         )}
 
-        <AssignModal
-          show={assignShow}
-          setShow={setAssignShow}
-          deliveryBoys={[
-            { id: 1, name: "DV1" },
-            { id: 2, name: "DV2" },
-            { id: 3, name: "DV3" },
-          ]}
-          setDeliveryBoy={setDeliveryBoy}
-          setOrderStatus={setOrderStatus}
-        />
+        <AssignModal orderId={props.oid} show={assignShow} setShow={setAssignShow} deliveryBoys={deliveryBoys} setDeliveryBoy={setDeliveryBoy} />
 
         <OrderModal show={orderShow} setShow={setOrderShow} />
       </div>

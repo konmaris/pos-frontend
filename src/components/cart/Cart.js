@@ -5,30 +5,13 @@ import { PersonFill } from "react-bootstrap-icons";
 import OrdersContext from "../../context/OrdersContext";
 import truncateString from "../../functions/truncateString";
 
-const customers = [
-  {
-    telephone: "6934871363",
-    street: "Sifnou",
-    streetNumber: "16",
-    doorbell: "Barimis",
-    floor: "4",
-    postalCode: "11254",
-  },
-  {
-    telephone: "6936651584",
-    street: "Michail Nomikou",
-    streetNumber: "14",
-    doorbell: "Maris",
-    floor: "3",
-    postalCode: "11253",
-  },
-];
+import axios from "axios";
 
 const Cart = (props) => {
   const { cart, setCart } = React.useContext(CartContext);
-  const { orders, setOrders } = React.useContext(OrdersContext);
 
   const [orderMode, setOrderMode] = React.useState({ label: "Takeaway", value: "takeaway" });
+  const [orderSource, setOrderSource] = React.useState({ label: "Telephone", value: "telephone" });
   const [customer, setCustomer] = React.useState({});
   const [validCustomer, setValidCustomer] = React.useState(false);
   const [invalidCustomer, setInvalidCustomer] = React.useState(false);
@@ -46,13 +29,13 @@ const Cart = (props) => {
   };
 
   const handleCheckout = () => {
-    console.log({ customer: customer, order: cart });
+    //console.log({ customer: customer, order: cart });
     const orderTime = Date.now();
     const deliveryTime = Date.now() + 15 * 60 * 1000;
 
-    const order = { type: orderMode.value, customer: customer, order: cart, orderTime: orderTime, deliveryTime: deliveryTime, status: orderMode.value === "takeaway" ? "COMPLETED" : "NEW ORDER" };
+    const order = { source: orderSource.value, type: orderMode.value, customer: customer, order: cart, orderTime: orderTime, deliveryTime: deliveryTime, status: orderMode.value === "takeaway" ? "COMPLETED" : "NEW_ORDER" };
 
-    setOrders([...orders, order]);
+    // setOrders([...orders, order]);
     setCart({ items: [], total: 0 });
     setCustomer({});
     setCustomerDetailsValid(false);
@@ -60,7 +43,11 @@ const Cart = (props) => {
     setInvalidCustomer(false);
     setOrderMode({ label: "Takeaway", value: "takeaway" });
 
-    console.log({ order: order });
+    //console.log({ order: order });
+
+    axios.post("http://localhost:8000/orders", order).then((response) => {
+      //console.log(response.status, response.data);
+    });
   };
 
   useEffect(() => {
@@ -75,13 +62,13 @@ const Cart = (props) => {
 
   const cartItems = cart.items?.map((item, idx) => {
     const itemExtras = item.extras?.map((extra, idx) => {
-      const extraName = Object.keys(extra)[0];
+      //console.log(extra);
+      const extraName = extra.optionName;
       return (
         <div key={extraName}>
-          {extra[extraName].showValue === true || extra[extraName].value === true ? (
+          {extra.optionShow === true || extra.optionValue === true ? (
             <>
-              <></>
-              <>{extra[extraName].showValue === true ? <>{truncateString(extra[extraName].optionLabel, 20)}</> : <>{truncateString(extra[extraName].label, 20)}</>}</>
+              <>{extra.optionShow === true ? <>{truncateString(extra.optionLabel, 20)}</> : extra.optionValue === true ? `${extra.optionName}` : <>{truncateString(extra.optionLabel, 20)}</>}</>
             </>
           ) : null}
         </div>
@@ -125,7 +112,6 @@ const Cart = (props) => {
           <Dropdown.Item
             onClick={() => {
               setOrderMode({ label: "Takeaway", value: "takeaway" });
-              console.log("fsdfds");
             }}
             active={orderMode.value === "takeaway"}
           >
@@ -142,26 +128,64 @@ const Cart = (props) => {
         </DropdownButton>
       </div>
       {orderMode.value === "delivery" ? (
-        <div className="m-0 mb-3 p-0 d-flex flex-row  align-content-center">
-          <PersonFill size={28} className="p-0" style={{ marginRight: "6px" }} color="#007bff" />
-          <span className="m-0 p-0 h-100" style={{ fontSize: "14px", fontWeight: 600, alignSelf: "center" }}>
-            {customer.street && customer.streetNumber ? customer?.street?.toUpperCase() + " " + customer?.streetNumber : "No address selected"}
-          </span>
-          <Button
-            onClick={() => {
-              setTempCustomer(customer);
-              setShowCustomerModal(true);
-            }}
-            variant="primary"
-            size="sm"
-            style={{ marginLeft: "auto", fontSize: "12px", fontWeight: 600 }}
-          >
-            CHANGE
-          </Button>
-        </div>
+        <>
+          <div className="m-0 mb-3 p-0 d-flex flex-row  align-content-center">
+            <PersonFill size={28} className="p-0" style={{ marginRight: "6px" }} color="#007bff" />
+            <span className="m-0 p-0 h-100" style={{ fontSize: "14px", fontWeight: 600, alignSelf: "center" }}>
+              {customer.street && customer.streetNumber ? customer?.street?.toUpperCase() + " " + customer?.streetNumber : "No address selected"}
+            </span>
+            <Button
+              onClick={() => {
+                setTempCustomer(customer);
+                setShowCustomerModal(true);
+              }}
+              variant="primary"
+              size="sm"
+              style={{ marginLeft: "auto", fontSize: "12px", fontWeight: 600 }}
+            >
+              CHANGE
+            </Button>
+          </div>
+          <div style={{ width: "100%", backgroundColor: "" }} className="mb-3">
+            <DropdownButton align="end" style={{ display: "flex", width: "100%" }} as={ButtonGroup} variant="outline-primary" title={orderSource.label.toUpperCase()}>
+              <Dropdown.Item
+                onClick={() => {
+                  setOrderSource({ label: "Telephone", value: "telephone" });
+                }}
+                active={orderMode.value === "telephone"}
+              >
+                TELEPHONE
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setOrderSource({ label: "Efood", value: "efood" });
+                }}
+                active={orderMode.value === "efood"}
+              >
+                EFOOD
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setOrderSource({ label: "Wolt", value: "wolt" });
+                }}
+                active={orderMode.value === "wolt"}
+              >
+                WOLT
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setOrderSource({ label: "Box", value: "box" });
+                }}
+                active={orderMode.value === "box"}
+              >
+                BOX
+              </Dropdown.Item>
+            </DropdownButton>
+          </div>
+        </>
       ) : null}
 
-      <div className="" style={{ minHeight: orderMode.value === "delivery" ? "72%" : "78%", maxHeight: orderMode.value === "delivery" ? "72%" : "78%", overflowY: "auto" }}>
+      <div className="" style={{ minHeight: orderMode.value === "delivery" ? "70%" : "76%", maxHeight: orderMode.value === "delivery" ? "70%" : "76%", overflowY: "auto" }}>
         {cartItems?.length === 0 ? <h3 className="mt-3">Your cart is empty</h3> : <ListGroup as="ol">{cartItems}</ListGroup>}
       </div>
 
@@ -194,18 +218,30 @@ const Cart = (props) => {
                 />
               </Form.Group>
               <Button
-                onClick={() => {
-                  const customer_ = customers.find((_customer) => {
-                    return _customer.telephone === tempCustomer.telephone;
-                  });
-                  if (customer_) {
-                    setTempCustomer(customer_);
-                    setValidCustomer(true);
-                    setInvalidCustomer(false);
-                  } else {
-                    setInvalidCustomer(true);
-                    setValidCustomer(false);
-                  }
+                onClick={async () => {
+                  await axios
+                    .get(`http://localhost:8000/customers/${tempCustomer.telephone}`)
+                    .then((res) => {
+                      // //console.log(res.data);
+
+                      const customer_ = res.data;
+
+                      if (customer_) {
+                        setTempCustomer(customer_);
+                        setValidCustomer(true);
+                        setInvalidCustomer(false);
+                      } else {
+                        setInvalidCustomer(true);
+                        setValidCustomer(false);
+                      }
+                    })
+                    .catch((error) => {
+                      //console.log(error);
+                    });
+
+                  // const customer_ = customers.find((_customer) => {
+                  //   return _customer.telephone === tempCustomer.telephone;
+                  // });
                 }}
                 variant="primary"
                 size="sm"

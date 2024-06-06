@@ -2,18 +2,34 @@ import React, { useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Order from "./Order";
 import OrdersContext from "../../context/OrdersContext";
+import axios from "axios";
 
 const Orders = (props) => {
   const [currKey, setCurrKey] = React.useState("active_orders");
 
-  const { orders, setOrders } = React.useContext(OrdersContext);
+  const { orders } = React.useContext(OrdersContext);
+
+  const [deliveryBoys, setDeliveryBoys] = React.useState([]);
 
   useEffect(() => {
-    setOrders([]);
+    axios.get("http://localhost:8000/deliveryBoys").then((res) => {
+      setDeliveryBoys(res.data);
+    });
   }, []);
 
+  useEffect(() => {
+    //console.log(deliveryBoys);
+  }, [deliveryBoys]);
+
+  useEffect(() => {
+    //console.log(orders);
+  }, [orders]);
+
   const activeOrdersMap = orders.map((order, idx) => {
-    const orderNumber = idx;
+    const orderSource = order.source;
+    const orderId = order._id;
+    const orderStatus = order.status;
+    const orderNumber = order.dailyOrderNumber;
     const type = order.type;
     const items = order.order.items;
     const orderTime = order.orderTime;
@@ -22,15 +38,18 @@ const Orders = (props) => {
     const amount = order.order.total;
 
     if (order.status !== "COMPLETED") {
-      return <Order type={type} status={order.status} idx={idx} key={orderNumber} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
+      return <Order source={orderSource} oid={orderId} type={type} status={order.status} deliveryBoy={order.deliveryBoy} idx={idx} key={`order-${orderStatus}-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
     } else {
       return <></>;
     }
   });
 
   const pastOrdersMap = orders.map((order, idx) => {
+    const orderSource = order.source;
+    const orderId = order._id;
+    const orderStatus = order.status;
     const type = order.type;
-    const orderNumber = idx;
+    const orderNumber = order.dailyOrderNumber;
     const items = order.order.items;
     const orderTime = order.orderTime;
     const deliveryTime = order.deliveryTime;
@@ -38,7 +57,7 @@ const Orders = (props) => {
     const amount = order.order.total;
 
     if (order.status === "COMPLETED" || order.status === "CANCELLED") {
-      return <Order type={type} deliveryBoy={order.deliveryBoy} status={order.status} idx={idx} key={orderNumber} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
+      return <Order source={orderSource} oid={orderId} type={type} deliveryBoy={order.deliveryBoy} status={order.status} idx={idx} key={`order-${orderStatus}-${orderId}`} orderNumber={orderNumber} items={items} orderTime={orderTime} deliveryTime={deliveryTime} address={address} amount={amount} />;
     } else {
       return <></>;
     }
