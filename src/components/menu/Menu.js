@@ -10,7 +10,7 @@ const Menu = (props) => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      axios.get("http://https://esp-pos-backend.onrender.com/categories").then((res) => {
+      axios.get("https://esp-pos-backend.onrender.com/categories").then((res) => {
         setCategories(res.data);
       });
     };

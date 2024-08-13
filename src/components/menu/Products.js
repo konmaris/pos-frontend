@@ -25,14 +25,14 @@ const Products = (props) => {
   const [currQuantity, setCurrQuantity] = React.useState(1);
 
   const fetchProducts = async () => {
-    await axios.get("http://https://esp-pos-backend.onrender.com/products").then((res) => {
+    await axios.get("https://esp-pos-backend.onrender.com/products").then((res) => {
       setProducts(res.data);
       setLoading(false);
     });
   };
 
   const fetchExtras = async () => {
-    await axios.get("http://https://esp-pos-backend.onrender.com/extras").then((res) => {
+    await axios.get("https://esp-pos-backend.onrender.com/extras").then((res) => {
       setExtras(res.data);
     });
   };

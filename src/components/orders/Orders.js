@@ -30,14 +30,14 @@ const Orders = (props) => {
   }, []);
 
   const fetchRiders = async () => {
-    await axios.get("http://https://esp-pos-backend.onrender.com/deliveryBoys").then((res) => {
+    await axios.get("https://esp-pos-backend.onrender.com/deliveryBoys").then((res) => {
       setDeliveryBoys(res.data);
     });
   };
 
   const fetchOrders = async () => {
     await axios
-      .get("http://https://esp-pos-backend.onrender.com/orders/current")
+      .get("https://esp-pos-backend.onrender.com/orders/current")
       .then((res) => {
         setOrders(res?.data?.reverse());
       })

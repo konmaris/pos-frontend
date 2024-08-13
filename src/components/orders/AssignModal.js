@@ -14,7 +14,7 @@ const AssignModal = (props) => {
   const handleAssign = () => {
     // use axios to put order to change the delivery boy
     axios
-      .put(`http://https://esp-pos-backend.onrender.com/orders/assign`, {
+      .put(`https://esp-pos-backend.onrender.com/orders/assign`, {
         orderId: props.orderId,
         deliveryBoyId: delBoy.value,
         shiftId: delBoy.lastShift,
