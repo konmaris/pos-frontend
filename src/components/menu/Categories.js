@@ -3,39 +3,42 @@ import Nav from "react-bootstrap/Nav";
 import Products from "./Products";
 
 const Categories = (props) => {
-  const [currKey, setCurrKey] = React.useState("cold_coffees");
+  // console.log("props", props);
+  const [currCategory, setCurrCategory] = React.useState(props.categories[0]); // [product, setProduct
 
-  const [currCategory, setCurrCategory] = React.useState({}); // [product, setProduct
+  // const [currCategory, setCurrCategory] = React.useState({}); // [product, setProduct
 
   const categories = props.categories;
 
-  useEffect(() => {
-    setCurrCategory(categories.filter((category) => category.name === currKey)[0]);
-  }, [currKey]);
+  // useEffect(() => {
+  //   setCurrCategory(categories.filter((category) => category.name === currKey)[0]);
+  // }, []);
 
   const categoriesMap = categories.map((category) => {
     return (
-      <Nav.Item key={category.name}>
+      <Nav.Item style={{ fontSize: 14 }} key={category.name}>
         <Nav.Link eventKey={category.name}>{category.label.toUpperCase()}</Nav.Link>
       </Nav.Item>
     );
   });
 
   return (
-    <div>
+    <div className="w-100 h-100">
       <Nav
         variant="pills"
-        activeKey={currKey}
+        activeKey={currCategory.name}
         onSelect={(e) => {
-          setCurrKey(e);
+          console.log(e);
+          setCurrCategory(() => {
+            return categories.filter((category) => category.name === e)[0];
+          });
         }}
-        defaultActiveKey="cold_drinks"
-        style={{ marginBottom: "1rem" }}
+        defaultActiveKey={props.categories[0].name}
         className="mb-4"
       >
         {categoriesMap}
       </Nav>
-      <Products category={currCategory} />
+      <Products category={currCategory._id} />
     </div>
   );
 };

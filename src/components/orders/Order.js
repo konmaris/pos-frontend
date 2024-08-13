@@ -10,25 +10,6 @@ import axios from "axios";
 // const deliveryBoys = ["Andreas", "Nikos", "Giannis"];
 
 const Order = (props) => {
-  const [deliveryBoys, setDeliveryBoys] = React.useState([]);
-  const [deliveryBoy, setDeliveryBoy] = React.useState("");
-
-  useEffect(() => {
-    fetchDeliveryBoys();
-  }, []);
-
-  const fetchDeliveryBoys = () => {
-    //use axios
-    axios.get("https://pos-backend-356y.onrender.com/deliveryBoys").then((res) => {
-      setDeliveryBoys(res.data);
-      //console.log(res.data);
-
-      const dbName = res.data.find((db) => db._id === props.deliveryBoy);
-
-      setDeliveryBoy(dbName?.name);
-    });
-  };
-
   const orderStatuses = {
     NEW_ORDER: "NEW_ORDER",
     ASSIGNED: "ASSIGNED",
@@ -36,6 +17,8 @@ const Order = (props) => {
     COMPLETED: "COMPLETED",
     CANCELLED: "CANCELLED",
   };
+
+  const [deliveryBoy, setDeliveryBoy] = React.useState("");
 
   const getOrderStatusLabel = (status) => {
     switch (status) {
@@ -54,21 +37,8 @@ const Order = (props) => {
     }
   };
 
-  const [orderStatus, setOrderStatus] = React.useState(props.status);
-  const [orderSource, setOrderSource] = React.useState(props.source);
-  const [orderStatusColor, setOrderStatusColor] = React.useState("success");
-  const [orderSourceColor, setOrderSourceColor] = React.useState("success");
-
   const [assignShow, setAssignShow] = React.useState(false);
   const [orderShow, setOrderShow] = React.useState(false);
-
-  useEffect(() => {
-    setOrderStatusColor(getStatusColor(orderStatus));
-  }, [orderStatus]);
-
-  useEffect(() => {
-    setOrderSourceColor(getSourceColor(orderSource));
-  }, [orderSource]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -97,6 +67,8 @@ const Order = (props) => {
         return "#00579a";
       case "box":
         return "#a06d00";
+      case "walkin":
+        return "#c123ff";
       default:
         return "secondary";
     }
@@ -117,18 +89,32 @@ const Order = (props) => {
   }, []);
 
   return (
-    <>
+    <div className="d-flex flex-column mb-3 border p-2 rounded">
+      <div className="d-flex flex-row w-100">
+        <div className="w-100 d-flex">
+          <span onClick={() => setOrderShow(true)} className="" style={{ fontSize: 24, fontWeight: 700, margin: 0, height: "fit-content" }}>
+            #{String(props.orderNumber).padStart(3, "0")}
+          </span>
+          <Badge pill bg="none" style={{ width: "fit-content", marginLeft: "5px", marginBottom: "0px", alignSelf: "center", backgroundColor: getSourceColor(props.source), fontSize: "8px" }}>
+            {props.source?.toUpperCase()}
+          </Badge>
+        </div>
+        {props.status !== orderStatuses.CANCELLED && props.status !== orderStatuses.COMPLETED && <span style={{ margin: 0, marginRight: "5px", height: "fit-content", fontWeight: 600, fontSize: 22, color: minutesLeft > 0 ? "green" : "red" }}>{minutesLeft.toString().split(".")[0]}'</span>}
+      </div>
+
+      <span style={{ width: "100%", textAlign: "left", fontWeight: "300", marginBottom: "4px" }}>{orderTime}</span>
+
       <div
         onClick={() => {
-          if (orderStatus !== orderStatuses.COMPLETED && orderStatus !== orderStatuses.CANCELLED) {
-            if (orderStatus === orderStatuses.ASSIGNED) {
-              axios.put(`https://pos-backend-356y.onrender.com/orders/status`, {
+          if (props.status !== orderStatuses.COMPLETED && props.status !== orderStatuses.CANCELLED) {
+            if (props.status === orderStatuses.ASSIGNED) {
+              axios.put(`http://192.168.68.101:8000/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.DELIVERED,
               });
               // setOrderStatus(orderStatuses.DELIVERED);
-            } else if (orderStatus === orderStatuses.DELIVERED) {
-              axios.put(`https://pos-backend-356y.onrender.com/orders/status`, {
+            } else if (props.status === orderStatuses.DELIVERED) {
+              axios.put(`http://192.168.68.101:8000/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.COMPLETED,
               });
@@ -136,81 +122,69 @@ const Order = (props) => {
             }
           }
         }}
-        className="d-flex flex-column mb-3 border p-2 rounded"
       >
-        <></>
-        <div className="d-flex flex-row w-100">
-          <div className="w-100 d-flex">
-            <span onClick={() => setOrderShow(true)} className="" style={{ fontSize: 24, fontWeight: 700, margin: 0, height: "fit-content" }}>
-              #{String(props.orderNumber).padStart(3, "0")}
-            </span>
-            <Badge pill bg="none" style={{ width: "fit-content", marginLeft: "5px", marginBottom: "0px", alignSelf: "center", backgroundColor: orderSourceColor, fontSize: "8px" }}>
-              {orderSource?.toUpperCase()}
-            </Badge>
-          </div>
-          {orderStatus !== orderStatuses.CANCELLED && orderStatus !== orderStatuses.COMPLETED && <span style={{ margin: 0, marginRight: "5px", height: "fit-content", fontWeight: 600, fontSize: 22, color: minutesLeft > 0 ? "green" : "red" }}>{minutesLeft.toString().split(".")[0]}'</span>}
-        </div>
-
-        <span style={{ width: "100%", textAlign: "left", fontWeight: "300", marginBottom: "4px" }}>{orderTime}</span>
-
-        <div>
-          <Badge pill bg="none" style={{ width: "fit-content", marginBottom: "5px", backgroundColor: orderStatusColor }}>
-            {getOrderStatusLabel(orderStatus).toUpperCase()}
-          </Badge>
-        </div>
-        <div className="d-flex flex-row w-100">
-          {props.type === "delivery" && (
-            <span style={{ flex: "100", alignSelf: "center" }}>
-              <GeoAltFill style={{ fontSize: 20, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-              {truncateString(props.address, 16).toUpperCase()}
-            </span>
-          )}
-          {orderStatus === orderStatuses.NEW_ORDER && (
-            <span
-              className="d-flex"
-              onClick={() => {
-                //console.log("assign clicked");
-                setAssignShow(true);
-              }}
-            >
-              <Bicycle style={{ fontSize: 36, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            </span>
-          )}
-        </div>
-
-        {orderStatus === orderStatuses.ASSIGNED && (
-          <span className="d-flex">
-            <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0]?.toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
-          </span>
-        )}
-
-        {orderStatus === orderStatuses.DELIVERED && (
-          <span className="d-flex">
-            <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0].toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
-          </span>
-        )}
-
-        {props.type === "takeaway" && (
-          <span className="d-flex">
-            <PersonWalking style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>TAKEAWAY</span>
-          </span>
-        )}
-
-        {props.type === "delivery" && orderStatus === orderStatuses.COMPLETED && (
-          <span className="d-flex">
-            <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
-            <span style={{ margin: 0, fontWeight: 500 }}>{deliveryBoy && deliveryBoy?.split(" ")[0].toUpperCase() + " " + deliveryBoy?.split(" ")[1][0] + "."}</span>
-          </span>
-        )}
-
-        <AssignModal orderId={props.oid} show={assignShow} setShow={setAssignShow} deliveryBoys={deliveryBoys} setDeliveryBoy={setDeliveryBoy} />
-
-        <OrderModal show={orderShow} setShow={setOrderShow} />
+        <Badge pill bg="none" style={{ width: "fit-content", marginBottom: "5px", backgroundColor: getStatusColor(props.status) }}>
+          {getOrderStatusLabel(props.status).toUpperCase()}
+        </Badge>
       </div>
-    </>
+      <div className="d-flex flex-row w-100">
+        {props.type === "delivery" && (
+          <span style={{ flex: "100", alignSelf: "center" }}>
+            <GeoAltFill style={{ fontSize: 20, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+            {truncateString(props.address, 16).toUpperCase()}
+          </span>
+        )}
+        {props.status === orderStatuses.NEW_ORDER && (
+          <span
+            className="d-flex"
+            onClick={() => {
+              //console.log("assign clicked");
+              setAssignShow(true);
+            }}
+          >
+            <Bicycle style={{ fontSize: 36, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+          </span>
+        )}
+      </div>
+
+      {props.status === orderStatuses.ASSIGNED && (
+        <span className="d-flex">
+          <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+          <span style={{ margin: 0, fontWeight: 500 }}>
+            {props?.deliveryBoy?.name.split(" ")[0].toUpperCase()} {props?.deliveryBoy?.name.split(" ")[1][0].toUpperCase()}.
+          </span>
+        </span>
+      )}
+
+      {props.status === orderStatuses.DELIVERED && (
+        <span className="d-flex">
+          <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+          <span style={{ margin: 0, fontWeight: 500 }}>
+            {props?.deliveryBoy?.name.split(" ")[0].toUpperCase()} {props?.deliveryBoy?.name.split(" ")[1][0].toUpperCase()}.
+          </span>
+        </span>
+      )}
+
+      {props.type === "takeaway" && (
+        <span className="d-flex">
+          <PersonWalking style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+          <span style={{ margin: 0, fontWeight: 500 }}>TAKEAWAY</span>
+        </span>
+      )}
+
+      {props.type === "delivery" && props.status === orderStatuses.COMPLETED && (
+        <span className="d-flex">
+          <Bicycle style={{ fontSize: 22, margin: 0, marginRight: "5px", color: "#0082e6" }} />
+          <span style={{ margin: 0, fontWeight: 500 }}>
+            {props?.deliveryBoy?.name.split(" ")[0].toUpperCase()} {props?.deliveryBoy?.name.split(" ")[1][0].toUpperCase()}.
+          </span>
+        </span>
+      )}
+
+      <AssignModal orderId={props.oid} show={assignShow} setShow={setAssignShow} deliveryBoys={props.deliveryBoys} setDeliveryBoy={setDeliveryBoy} />
+
+      <OrderModal deliveryBoys={props.deliveryBoys} type={props.type} status={props.status} deliveryBoy={props?.deliveryBoy?.name} order={props.oid} show={orderShow} setShow={setOrderShow} />
+    </div>
   );
 };
 

@@ -1,21 +1,29 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import Categories from "./Categories";
+import { Spinner } from "react-bootstrap";
+import LoadingContext from "../../context/LoadingContext";
 
 const Menu = (props) => {
   const [categories, setCategories] = React.useState([]);
+  const { loading, setLoading } = React.useContext(LoadingContext);
 
   useEffect(() => {
-    axios.get("https://pos-backend-356y.onrender.com/categories").then((res) => {
-      setCategories(res.data);
-    });
+    const fetchCategories = async () => {
+      axios.get("http://192.168.68.101:8000/categories").then((res) => {
+        setCategories(res.data);
+      });
+    };
+    fetchCategories();
   }, []);
 
   return (
-    <div className={props.className} style={props.style}>
-      <h2 className="mb-4">Menu</h2>
-      <Categories categories={categories} />
-    </div>
+    <>
+      <div className={props.className} style={props.style}>
+        {/* <h2 className="mb-4">Menu</h2> */}
+        {categories.length > 0 && <Categories categories={categories} />}
+      </div>
+    </>
   );
 };
 

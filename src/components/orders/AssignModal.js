@@ -1,73 +1,53 @@
 import axios from "axios";
 import React from "react";
 import { Form, Modal, Button } from "react-bootstrap";
+import ReactSelect from "react-select";
 
 const AssignModal = (props) => {
+  const [delBoy, setDelBoy] = React.useState("");
+
   const handleClose = () => {
+    setDelBoy("");
     props.setShow(false);
   };
 
   const handleAssign = () => {
     // use axios to put order to change the delivery boy
     axios
-      .put(`https://pos-backend-356y.onrender.com/orders/assign`, {
+      .put(`http://192.168.68.101:8000/orders/assign`, {
         orderId: props.orderId,
-        deliveryBoyId: delBoy,
+        deliveryBoyId: delBoy.value,
+        shiftId: delBoy.lastShift,
       })
       .then((res) => {})
       .catch((err) => {
-        //console.log(err);
-      });
-
-    axios
-      .put(`https://pos-backend-356y.onrender.com/orders/status`, {
-        orderId: props.orderId,
-        status: "ASSIGNED",
-      })
-      .then((res) => {})
-      .catch((err) => {
-        //console.log(err);
+        console.log(err);
       });
 
     props.setShow(false);
-    // props.setOrderStatus("ASSIGNED");
-    // fetchOrders();
   };
 
-  const [delBoy, setDelBoy] = React.useState("");
+  let dbs_ = [];
+  props.deliveryBoys?.forEach((db) => {
+    if (db.status === "active") {
+      dbs_.push({ value: db._id, label: db.name, lastShift: db.lastShift });
+    }
+  });
 
+  // console.log(props.deliveryBoys);
   return (
     <div>
       <Modal show={props.show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Assign order</Modal.Title>
+          <Modal.Title>Ανάθεση παραγγελίας</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Label style={{ fontWeight: "600" }}>Choose a delivery boy</Form.Label>
-          <div key="inline-radio" className="mb-3">
-            {props.deliveryBoys.map((db) => {
-              return (
-                <Form.Check
-                  onClick={(e) => {
-                    //console.log(db._id);
-                    setDelBoy(db._id);
-                  }}
-                  inline
-                  key={db._id}
-                  name="group1"
-                  type="radio"
-                  label={db.name}
-                />
-              );
-            })}
-          </div>
+          <Form.Label style={{ fontWeight: "600" }}>Επιλέξτε έναν διανομέα</Form.Label>
+          <ReactSelect options={dbs_} onChange={(e) => setDelBoy(e)} placeholder="Επιλέξτε διανομέα..." value={delBoy} />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="success" onClick={handleAssign}>
-            Assign
+          <Button variant="outline-success" onClick={handleAssign}>
+            Ανάθεση
           </Button>
         </Modal.Footer>
       </Modal>

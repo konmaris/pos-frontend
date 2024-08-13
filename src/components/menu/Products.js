@@ -1,24 +1,16 @@
 import React, { useEffect } from "react";
-import { Button, Card, CardGroup, Col, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Button, ButtonGroup, Card, CardGroup, Col, Form, FormLabel, Modal, Row, Spinner } from "react-bootstrap";
 import CartContext from "../../context/CartContext";
 import axios from "axios";
+import LoadingContext from "../../context/LoadingContext";
 
 const Products = (props) => {
+  const currCategory = props.category;
+
+  const { loading, setLoading } = React.useContext(LoadingContext);
+
   const [products, setProducts] = React.useState([]);
   const [extras, setExtras] = React.useState([]);
-
-  const currCategory = props.category?._id;
-
-  useEffect(() => {
-    axios.get("https://pos-backend-356y.onrender.com/products").then((res) => {
-      setProducts(res.data);
-    });
-
-    axios.get("https://pos-backend-356y.onrender.com/extras").then((res) => {
-      setExtras(res.data);
-      //console.log(res.data);
-    });
-  }, []);
 
   const { cart, setCart } = React.useContext(CartContext);
   const [currProduct, setCurrProduct] = React.useState({}); // [product, setProduct
@@ -26,14 +18,30 @@ const Products = (props) => {
 
   /* MODAL */
   const [show, setShow] = React.useState(false);
+
   const [saveButtonActive, setSaveButtonActive] = React.useState(false);
 
   const [currProductExtras, setCurrProductExtras] = React.useState([]); // [product, setProduct
+  const [currQuantity, setCurrQuantity] = React.useState(1);
+
+  const fetchProducts = async () => {
+    await axios.get("http://192.168.68.101:8000/products").then((res) => {
+      setProducts(res.data);
+      setLoading(false);
+    });
+  };
+
+  const fetchExtras = async () => {
+    await axios.get("http://192.168.68.101:8000/extras").then((res) => {
+      setExtras(res.data);
+    });
+  };
 
   const handleClose = () => {
     setShow(false);
     setCurrProduct(null);
     setCurrProductExtras([]);
+    setCurrQuantity(1);
   };
   const handleShow = () => setShow(true);
 
@@ -45,41 +53,28 @@ const Products = (props) => {
     let extrasCost = 0;
     //console.log("currProductExtras", currProductExtras);
     currProductExtras.forEach((extra) => {
-      const extraName = extra.name;
-
       extrasCost += extra.optionPrice;
-
-      //console.log({ extraCost: extrasCost });
     });
 
     // //console.log("extrasCost", extrasCost);
 
-    const product_ = { ...product, extras: currProductExtras, price: product.price + extrasCost, id: product._id };
+    const product_ = { ...product, extras: currProductExtras, price: product.price + extrasCost, id: product._id, quantity: currQuantity };
     delete product_._id;
     delete product_.__v;
 
     newItems.push(product_);
-    setCart({ items: newItems, total: cart.total + product_.price });
+    setCart({ items: newItems, total: cart.total + product_.price * currQuantity });
     setCurrProductExtras([]);
+    setCurrQuantity(1);
     setCurrProduct(null);
   };
 
   useEffect(() => {
-    const _product = products.filter((product) => product._id === currProduct)[0];
-    // //console.log(currProductObj);
+    fetchProducts();
+    fetchExtras();
+  }, []);
 
-    const _extras = _product?.extras?.map((extra) => {
-      return extras.find((extra_) => extra_._id === extra);
-    });
-
-    //console.log(_extras);
-
-    const _currObj = { ..._product, extras: _extras };
-
-    setCurrProductObj(_currObj);
-  }, [currProduct]);
-
-  const productsMap = products?.map((product, idx) => {
+  const productsMap = products.map((product) => {
     if (product.category === currCategory) {
       return (
         <Col key={product.name}>
@@ -105,45 +100,14 @@ const Products = (props) => {
     }
   });
 
-  //using useEffect to check if all required extras are selected
-  useEffect(() => {
-    if (products) {
-      let requiredExtras = currProductObj?.extras?.filter((extra) => {
-        //console.log("extra", extra);
-        return extra.required === true;
-      });
-
-      //console.log("required extras", requiredExtras);
-
-      let requiredExtrasNames = requiredExtras?.map((extra) => {
-        return extra.name;
-      });
-
-      let currExtraNames = currProductExtras?.map((extra) => {
-        //console.log("extra2", extra);
-        return extra.optionName;
-      });
-
-      //console.log("curr extra names", currExtraNames);
-      //console.log("required extra names", requiredExtrasNames);
-
-      const extrasMatched = requiredExtrasNames?.every((val) => currExtraNames.includes(val));
-      //console.log(extrasMatched);
-
-      if (extrasMatched) {
-        setSaveButtonActive(true);
-      } else {
-        setSaveButtonActive(false);
-      }
-    }
-  }, [currProductExtras, products]);
-
   const extrasRender = currProductObj?.extras?.map((extra) => {
+    //make first letter of extra.name capital
+    const extraName = (extra.name = extra.name.charAt(0).toUpperCase() + extra.name.slice(1));
     return (
       <div key={extra.name}>
         {extra.type === "multiple_choice" ? (
           <>
-            <Form.Label style={{ fontWeight: "600" }}>{extra.name}</Form.Label>
+            <Form.Label style={{ fontWeight: "600" }}>{extra.label}</Form.Label>
             <div key="inline-radio" className="mb-3">
               {extra.options.map((option) => {
                 return (
@@ -207,16 +171,16 @@ const Products = (props) => {
         {extra.type === "checkbox" ? (
           <Form.Check
             type="checkbox"
-            label={extra.name + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
+            label={extra.label + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
             key={extra.name}
             onChange={(e) => {
               setCurrProductExtras((prev) => {
                 //filter out the previous extra with the same name, if it exists
                 let prev_ = prev.filter((prevExtra) => {
-                  return prevExtra.optionName !== extra.label;
+                  return prevExtra.optionName !== extra.name;
                 });
 
-                prev_.push({ optionValue: e.target.checked, optionLabel: e.target.checked, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
+                prev_.push({ optionValue: e.target.checked, optionLabel: extra.label, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
                 return prev_;
               });
             }}
@@ -226,8 +190,56 @@ const Products = (props) => {
     );
   });
 
+  useEffect(() => {
+    const _product = products.filter((product) => product._id === currProduct)[0];
+    // //console.log(currProductObj);
+
+    const _extras = _product?.extras?.map((extra) => {
+      return extras.find((extra_) => extra_._id === extra);
+    });
+
+    //console.log(_extras);
+
+    const _currObj = { ..._product, extras: _extras };
+
+    setCurrProductObj(_currObj);
+  }, [currProduct]);
+
+  //using useEffect to check if all required extras are selected
+  useEffect(() => {
+    if (products) {
+      let requiredExtras = currProductObj?.extras?.filter((extra) => {
+        //console.log("extra", extra);
+        return extra.required === true;
+      });
+
+      //console.log("required extras", requiredExtras);
+
+      let requiredExtrasNames = requiredExtras?.map((extra) => {
+        return extra.name;
+      });
+
+      let currExtraNames = currProductExtras?.map((extra) => {
+        //console.log("extra2", extra);
+        return extra.optionName;
+      });
+
+      //console.log("curr extra names", currExtraNames);
+      //console.log("required extra names", requiredExtrasNames);
+
+      const extrasMatched = requiredExtrasNames?.every((val) => currExtraNames.includes(val));
+      //console.log(extrasMatched);
+
+      if (extrasMatched) {
+        setSaveButtonActive(true);
+      } else {
+        setSaveButtonActive(false);
+      }
+    }
+  }, [currProductExtras, products]);
+
   return (
-    <div>
+    <div className="w-100 h-75">
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{currProductObj?.name}</Modal.Title>
@@ -241,27 +253,69 @@ const Products = (props) => {
               </Form.Label>
             ) : null}
             {extrasCheckboxesRender}
+            <Form.Label className="mt-3" style={{ fontWeight: "600" }}>
+              Comments
+            </Form.Label>
+            <Form.Control
+              value={currProductObj?.comments}
+              onChange={(e) => {
+                setCurrProductObj((prev) => {
+                  return { ...prev, comments: e.target.value };
+                });
+              }}
+              as="textarea"
+              rows={3}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button
-            variant="primary"
-            disabled={!saveButtonActive}
-            onClick={() => {
-              handleAddToCart(currProductObj);
-              handleClose();
-            }}
-          >
-            Save Changes
-          </Button>
+          <div style={{ width: "100%", backgroundColor: "", display: "flex", alignItems: "center" }}>
+            <div style={{ flex: "100%", display: "flex" }}>
+              <Button
+                onClick={() => {
+                  if (currQuantity > 1) setCurrQuantity(currQuantity - 1);
+                }}
+                style={{ height: "40px", width: "40px" }}
+              >
+                -
+              </Button>
+              <div style={{ width: "40px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>{currQuantity}</div>
+              <Button
+                onClick={() => {
+                  setCurrQuantity(currQuantity + 1);
+                }}
+                style={{ height: "40px", width: "40px" }}
+              >
+                +
+              </Button>
+            </div>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              disabled={!saveButtonActive}
+              onClick={() => {
+                handleAddToCart(currProductObj);
+                handleClose();
+              }}
+              style={{ width: "220px", marginLeft: "10px" }}
+            >
+              Save Changes
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
-      <Row xs={1} md={3} className="g-4">
-        {productsMap}
-      </Row>
+
+      {loading === true ? (
+        <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+          <Spinner animation="border" role="status" variant="primary" />
+        </div>
+      ) : (
+        <Row xs={1} md={3} className="g-4">
+          {productsMap}
+        </Row>
+      )}
     </div>
   );
 };
