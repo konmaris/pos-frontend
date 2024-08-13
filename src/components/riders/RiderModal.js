@@ -8,7 +8,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
 
   const fetchRiderData = async () => {
     // fetch rider data
-    const url = `http://192.168.68.101:8000/deliveryBoys/${rider}`;
+    const url = `http://https://esp-pos-backend.onrender.com/deliveryBoys/${rider}`;
 
     await axios
       .get(url)
@@ -23,7 +23,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
   const fetchCurrentOrders = async () => {
     // fetch current orders
     if (riderData.lastShift) {
-      const url = `http://192.168.68.101:8000/orders/current/${rider}?shift_id=${riderData.lastShift}`;
+      const url = `http://https://esp-pos-backend.onrender.com/orders/current/${rider}?shift_id=${riderData.lastShift}`;
 
       await axios
         .get(url)
@@ -63,7 +63,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
               <Button
                 style={{ width: "fit-content", fontSize: 14, fontWeight: 600 }}
                 onClick={async () => {
-                  await axios.put(`http://192.168.68.101:8000/deliveryBoys/updateShift`, {
+                  await axios.put(`http://https://esp-pos-backend.onrender.com/deliveryBoys/updateShift`, {
                     deliveryBoyId: rider,
                     shiftStatus: "end",
                   });
@@ -80,7 +80,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
               <Button
                 style={{ width: "fit-content", fontSize: 14, fontWeight: 600 }}
                 onClick={async () => {
-                  await axios.put(`http://192.168.68.101:8000/deliveryBoys/updateShift`, {
+                  await axios.put(`http://https://esp-pos-backend.onrender.com/deliveryBoys/updateShift`, {
                     deliveryBoyId: rider,
                     shiftStatus: "start",
                   });

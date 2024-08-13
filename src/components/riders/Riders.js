@@ -15,7 +15,7 @@ const Riders = () => {
 
   const handleFetchRiders = async () => {
     await axios
-      .get("http://192.168.68.101:8000/deliveryBoys")
+      .get("http://https://esp-pos-backend.onrender.com/deliveryBoys")
       .then((res) => {
         setRiders(res.data);
         setLoading(false);

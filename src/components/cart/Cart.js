@@ -78,7 +78,7 @@ const Cart = (props) => {
 
     const order = { source: orderSource.value, type: orderMode.value, customer: customer, order: cart, paymentMethod: paymentMethod, orderTime: orderTime, deliveryTime: deliveryTimestamp, courierTip: tip, status: orderMode.value === "takeaway" ? "COMPLETED" : "NEW_ORDER" };
 
-    axios.post("http://192.168.68.101:8000/orders", order).then((response) => {
+    axios.post("http://https://esp-pos-backend.onrender.com/orders", order).then((response) => {
       //console.log(response.status, response.data);
     });
 
@@ -513,7 +513,7 @@ const Cart = (props) => {
               <Button
                 onClick={async () => {
                   await axios
-                    .get(`http://192.168.68.101:8000/customers/${tempCustomer?.telephone}`)
+                    .get(`http://https://esp-pos-backend.onrender.com/customers/${tempCustomer?.telephone}`)
                     .then((res) => {
                       console.log(res?.data?.addresses);
 

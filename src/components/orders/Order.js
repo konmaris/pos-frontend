@@ -108,13 +108,13 @@ const Order = (props) => {
         onClick={() => {
           if (props.status !== orderStatuses.COMPLETED && props.status !== orderStatuses.CANCELLED) {
             if (props.status === orderStatuses.ASSIGNED) {
-              axios.put(`http://192.168.68.101:8000/orders/status`, {
+              axios.put(`http://https://esp-pos-backend.onrender.com/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.DELIVERED,
               });
               // setOrderStatus(orderStatuses.DELIVERED);
             } else if (props.status === orderStatuses.DELIVERED) {
-              axios.put(`http://192.168.68.101:8000/orders/status`, {
+              axios.put(`http://https://esp-pos-backend.onrender.com/orders/status`, {
                 orderId: props.oid,
                 status: orderStatuses.COMPLETED,
               });

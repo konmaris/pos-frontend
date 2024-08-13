@@ -14,7 +14,7 @@ const OrderModal = (props) => {
 
   const handleCancelOrder = async () => {
     await axios
-      .put("http://192.168.68.101:8000/orders/cancel", {
+      .put("http://https://esp-pos-backend.onrender.com/orders/cancel", {
         orderId: props.order,
       })
       .then((res) => {
@@ -28,7 +28,7 @@ const OrderModal = (props) => {
   };
 
   const fetchRiders = async () => {
-    await axios.get("http://192.168.68.101:8000/deliveryBoys").then((res) => {
+    await axios.get("http://https://esp-pos-backend.onrender.com/deliveryBoys").then((res) => {
       let dbs = [];
       res.data
         .filter((db) => db.status === "active")
@@ -42,7 +42,7 @@ const OrderModal = (props) => {
 
   const fetchOrder = () => {
     axios
-      .get(`http://192.168.68.101:8000/orders/${props.order}`)
+      .get(`http://https://esp-pos-backend.onrender.com/orders/${props.order}`)
       .then((res) => {
         setOrder(res.data);
 
@@ -231,7 +231,7 @@ const OrderModal = (props) => {
                             console.log({ prev: order.deliveryBoy, next: db });
                             if (JSON.stringify(order.deliveryBoy) !== JSON.stringify(db.value)) {
                               await axios
-                                .put("http://192.168.68.101:8000/orders/assign", {
+                                .put("http://https://esp-pos-backend.onrender.com/orders/assign", {
                                   orderId: props.order,
                                   deliveryBoyId: db.value,
                                 })
