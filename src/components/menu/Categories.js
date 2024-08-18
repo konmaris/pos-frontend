@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 import Products from "./Products";
 
 const Categories = (props) => {
-  // console.log("props", props);
+  // //console.log("props", props);
   const [currCategory, setCurrCategory] = React.useState(props.categories[0]); // [product, setProduct
 
   // const [currCategory, setCurrCategory] = React.useState({}); // [product, setProduct
@@ -28,7 +28,7 @@ const Categories = (props) => {
         variant="pills"
         activeKey={currCategory.name}
         onSelect={(e) => {
-          console.log(e);
+          //console.log(e);
           setCurrCategory(() => {
             return categories.filter((category) => category.name === e)[0];
           });

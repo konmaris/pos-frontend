@@ -72,14 +72,14 @@ const Cart = (props) => {
   }, [orderMode]);
 
   const handleCheckout = () => {
-    //console.log({ customer: customer, order: cart });
+    ////console.log({ customer: customer, order: cart });
     const orderTime = Date.now();
     const deliveryTimestamp = Date.now() + deliveryTime * 60 * 1000;
 
     const order = { source: orderSource.value, type: orderMode.value, customer: customer, order: cart, paymentMethod: paymentMethod, orderTime: orderTime, deliveryTime: deliveryTimestamp, courierTip: tip, status: orderMode.value === "takeaway" ? "COMPLETED" : "NEW_ORDER" };
 
     axios.post("https://esp-pos-backend.onrender.com/orders", order).then((response) => {
-      //console.log(response.status, response.data);
+      ////console.log(response.status, response.data);
     });
 
     // setOrders([...orders, order]);
@@ -102,7 +102,7 @@ const Cart = (props) => {
     setCustomerAddress({});
     setTempCustomer({});
 
-    console.log({ order: order });
+    //console.log({ order: order });
   };
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const Cart = (props) => {
         setCustomerDetailsValid(false);
       }
     }
-    console.log(tempCustomer);
+    //console.log(tempCustomer);
   }, [tempCustomer]);
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const Cart = (props) => {
   }, [orderMode]);
 
   useEffect(() => {
-    console.log(customerAddress);
+    //console.log(customerAddress);
 
     if (customerAddress?.address) {
       setTempCustomer((prev) => {
@@ -131,15 +131,15 @@ const Cart = (props) => {
   }, [customerAddress]);
 
   useEffect(() => {
-    console.log(customer);
+    //console.log(customer);
   }, [customer]);
 
   useEffect(() => {
-    console.log(cart);
+    //console.log(cart);
   }, [cart]);
 
   const cartItems = cart.items?.map((item, idx) => {
-    console.log(item?.extras);
+    //console.log(item?.extras);
     const itemExtras = item.extras?.map((extra, idx) => {
       const extraName = extra.optionName;
       return (
@@ -185,7 +185,7 @@ const Cart = (props) => {
   });
 
   useEffect(() => {
-    console.log(tip);
+    //console.log(tip);
   }, [tip]);
 
   return (
@@ -515,7 +515,7 @@ const Cart = (props) => {
                   await axios
                     .get(`https://esp-pos-backend.onrender.com/customers/${tempCustomer?.telephone}`)
                     .then((res) => {
-                      console.log(res?.data?.addresses);
+                      //console.log(res?.data?.addresses);
 
                       const customer_ = res.data;
 
@@ -527,7 +527,7 @@ const Cart = (props) => {
                         });
 
                         setCustomerAddresses(_customerAddresses);
-                        console.log(_customerAddresses);
+                        //console.log(_customerAddresses);
                         setCustomerAddress(_customerAddresses[0]);
 
                         // setCustomerAddresses([{ value: customer_.street.split(" ")[0] + customer_.streetNumber, label: customer_.street + " " + customer_.streetNumber, address:  }]);
@@ -546,7 +546,7 @@ const Cart = (props) => {
                       // setCustomerAddress({});
                       setSavedAddressesExist(false);
 
-                      console.log(error);
+                      //console.log(error);
                     });
 
                   // const customer_ = customers.find((_customer) => {

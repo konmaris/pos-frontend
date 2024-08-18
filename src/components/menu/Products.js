@@ -46,17 +46,17 @@ const Products = (props) => {
   const handleShow = () => setShow(true);
 
   const handleAddToCart = (product) => {
-    //console.log("product", product);
+    ////console.log("product", product);
     const newItems = [...cart.items];
 
     //calculate cost of extras
     let extrasCost = 0;
-    //console.log("currProductExtras", currProductExtras);
+    ////console.log("currProductExtras", currProductExtras);
     currProductExtras.forEach((extra) => {
       extrasCost += extra.optionPrice;
     });
 
-    // //console.log("extrasCost", extrasCost);
+    // ////console.log("extrasCost", extrasCost);
 
     const product_ = { ...product, extras: currProductExtras, price: product.price + extrasCost, id: product._id, quantity: currQuantity };
     delete product_._id;
@@ -114,7 +114,7 @@ const Products = (props) => {
                   <Form.Check
                     onClick={(e) => {
                       setCurrProductExtras((prev) => {
-                        //console.log("prev", prev);
+                        ////console.log("prev", prev);
                         //filter out the previous extra with the same name
                         let prev_ = prev?.filter((prevExtra) => {
                           return prevExtra.optionName !== extra.name;
@@ -147,7 +147,7 @@ const Products = (props) => {
               type="switch"
               id="custom-switch"
               onChange={(e) => {
-                //console.log(e.target.checked);
+                ////console.log(e.target.checked);
                 setCurrProductExtras((prev) => {
                   let prev_ = prev.filter((prevExtra) => {
                     //filter array based on optionName
@@ -192,13 +192,13 @@ const Products = (props) => {
 
   useEffect(() => {
     const _product = products.filter((product) => product._id === currProduct)[0];
-    // //console.log(currProductObj);
+    // ////console.log(currProductObj);
 
     const _extras = _product?.extras?.map((extra) => {
       return extras.find((extra_) => extra_._id === extra);
     });
 
-    //console.log(_extras);
+    ////console.log(_extras);
 
     const _currObj = { ..._product, extras: _extras };
 
@@ -209,26 +209,26 @@ const Products = (props) => {
   useEffect(() => {
     if (products) {
       let requiredExtras = currProductObj?.extras?.filter((extra) => {
-        //console.log("extra", extra);
+        ////console.log("extra", extra);
         return extra.required === true;
       });
 
-      //console.log("required extras", requiredExtras);
+      ////console.log("required extras", requiredExtras);
 
       let requiredExtrasNames = requiredExtras?.map((extra) => {
         return extra.name;
       });
 
       let currExtraNames = currProductExtras?.map((extra) => {
-        //console.log("extra2", extra);
+        ////console.log("extra2", extra);
         return extra.optionName;
       });
 
-      //console.log("curr extra names", currExtraNames);
-      //console.log("required extra names", requiredExtrasNames);
+      ////console.log("curr extra names", currExtraNames);
+      ////console.log("required extra names", requiredExtrasNames);
 
       const extrasMatched = requiredExtrasNames?.every((val) => currExtraNames.includes(val));
-      //console.log(extrasMatched);
+      ////console.log(extrasMatched);
 
       if (extrasMatched) {
         setSaveButtonActive(true);

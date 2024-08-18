@@ -21,7 +21,7 @@ const AssignModal = (props) => {
       })
       .then((res) => {})
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
 
     props.setShow(false);
@@ -34,7 +34,7 @@ const AssignModal = (props) => {
     }
   });
 
-  // console.log(props.deliveryBoys);
+  // //console.log(props.deliveryBoys);
   return (
     <div>
       <Modal show={props.show} onHide={handleClose}>

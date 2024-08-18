@@ -42,7 +42,7 @@ const Orders = (props) => {
         setOrders(res?.data?.reverse());
       })
       .catch((err) => {
-        //console.log(err);
+        ////console.log(err);
       });
   };
 
@@ -51,7 +51,7 @@ const Orders = (props) => {
 
   const activeOrdersMap = activeOrders.map((order, idx) => {
     const deliveryBoy = deliveryBoys.find((db) => db._id === order.deliveryBoy);
-    // console.log(deliveryBoy);
+    // //console.log(deliveryBoy);
 
     const orderSource = order.source;
     const orderId = order._id;

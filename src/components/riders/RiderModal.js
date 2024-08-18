@@ -41,7 +41,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
         setRiderData(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
   };
 
@@ -56,7 +56,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
           setCurrentOrders(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
     }
   };
@@ -162,7 +162,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
   const lastShiftId = riderData?.lastShift;
   const lastShift = riderData?.shifts?.find((shift) => shift._id === lastShiftId);
 
-  // console.log("lastShift", lastShift);
+  // //console.log("lastShift", lastShift);
 
   //calculate if rider last shift end time was less than 12 hours ago
   const lastShiftEndTime = lastShift?.end;
@@ -265,12 +265,12 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
                             axios
                               .put(`https://esp-pos-backend.onrender.com/deliveryBoys/updateShiftCashForChange`, { deliveryBoyId: rider, cashForChange: parseFloat(cashForChange) })
                               .then((res) => {
-                                console.log("Update cash for change", res.data);
+                                //console.log("Update cash for change", res.data);
                                 fetchRiderData();
                                 setEditCashForChange(false);
                               })
                               .catch((err) => {
-                                console.log(err);
+                                //console.log(err);
                               });
                           }}
                           variant="outline-success"
@@ -282,7 +282,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
                           onClick={() => {
                             setEditCashForChange(false);
                             setCashForChange(lastShift?.cashForChange.toFixed(2));
-                            console.log("Cancel save");
+                            //console.log("Cancel save");
                           }}
                           variant="outline-danger"
                         >

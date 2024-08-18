@@ -18,12 +18,12 @@ const OrderModal = (props) => {
         orderId: props.order,
       })
       .then((res) => {
-        console.log(res);
+        //console.log(res);
         fetchOrder();
         setShowCancelModal(false);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
   };
 
@@ -46,10 +46,10 @@ const OrderModal = (props) => {
       .then((res) => {
         setOrder(res.data);
 
-        console.log(res.data);
+        //console.log(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
   };
 
@@ -120,7 +120,7 @@ const OrderModal = (props) => {
 
   React.useEffect(() => {
     fetchOrder();
-    console.log(props.deliveryBoys);
+    //console.log(props.deliveryBoys);
     setDbs([]);
 
     // props.deliveryBoys
@@ -219,7 +219,7 @@ const OrderModal = (props) => {
                             options={_dbs}
                             value={db}
                             onChange={(e) => {
-                              console.log(e);
+                              //console.log(e);
                               setDb(e);
                             }}
                           />
@@ -227,8 +227,8 @@ const OrderModal = (props) => {
                         <Button
                           style={{ marginRight: "3px", fontWeight: 500 }}
                           onClick={async () => {
-                            console.log(JSON.stringify(order.deliveryBoy) !== JSON.stringify(db.value));
-                            console.log({ prev: order.deliveryBoy, next: db });
+                            //console.log(JSON.stringify(order.deliveryBoy) !== JSON.stringify(db.value));
+                            //console.log({ prev: order.deliveryBoy, next: db });
                             if (JSON.stringify(order.deliveryBoy) !== JSON.stringify(db.value)) {
                               await axios
                                 .put("https://esp-pos-backend.onrender.com/orders/assign", {
@@ -236,16 +236,16 @@ const OrderModal = (props) => {
                                   deliveryBoyId: db.value,
                                 })
                                 .then((res) => {
-                                  console.log(res);
+                                  //console.log(res);
                                   fetchOrder();
                                 })
                                 .catch((err) => {
-                                  console.log(err);
+                                  //console.log(err);
                                 });
                               setEditDeliveryBoy(false);
-                              console.log("Save");
+                              //console.log("Save");
                             } else {
-                              console.log("No changes");
+                              //console.log("No changes");
                               setEditDeliveryBoy(false);
                             }
                           }}
@@ -257,7 +257,7 @@ const OrderModal = (props) => {
                           style={{ marginRight: "3px" }}
                           onClick={() => {
                             setEditDeliveryBoy(false);
-                            console.log("Cancel save");
+                            //console.log("Cancel save");
                           }}
                           variant="outline-danger"
                         >
@@ -315,7 +315,7 @@ const OrderModal = (props) => {
           {order?.status !== "CANCELLED" && order?.status !== "COMPLETED" && (
             <Button
               onClick={() => {
-                console.log("close");
+                //console.log("close");
                 props.setShow(false);
                 setShowCancelModal(true);
               }}
@@ -333,7 +333,7 @@ const OrderModal = (props) => {
           {props?.type === "takeaway" && order?.status !== "CANCELLED" && (
             <Button
               onClick={() => {
-                console.log("close");
+                //console.log("close");
                 props.setShow(false);
                 setShowCancelModal(true);
               }}
@@ -348,7 +348,7 @@ const OrderModal = (props) => {
             </Button>
           )}
 
-          <Button variant="outline-secondary" style={{}} onClick={() => console.log("Cancel order")}>
+          <Button variant="outline-secondary" style={{}} onClick={() => {}}>
             <div className="d-flex flex-row justify-content-center align-items-center">
               <Printer />
 

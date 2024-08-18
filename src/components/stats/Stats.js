@@ -49,7 +49,7 @@ const Stats = () => {
         setOrders(res?.data?.reverse());
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
   };
 
@@ -61,7 +61,7 @@ const Stats = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       });
   };
 
@@ -223,11 +223,11 @@ const Stats = () => {
       }, 0);
   });
 
-  console.log(orderAmountPerPostalCode);
+  //console.log(orderAmountPerPostalCode);
 
-  console.log(orderCountPerPostalCode);
+  //console.log(orderCountPerPostalCode);
 
-  console.log(orderPostalCodes);
+  //console.log(orderPostalCodes);
 
   const ordersPerPostalCodeData = {
     labels: orderPostalCodes,
@@ -264,7 +264,7 @@ const Stats = () => {
     return riders.find((rider) => rider._id === riderId)?.name;
   });
 
-  console.log(riderNames);
+  //console.log(riderNames);
 
   // using riderIds array, create an array of objects with rider id and order count
   const ordersPerRider = riderIds.map((riderId) => {
@@ -279,9 +279,9 @@ const Stats = () => {
       }, 0);
   });
 
-  console.log(ordersPerRider);
+  //console.log(ordersPerRider);
 
-  console.log(riderIds);
+  //console.log(riderIds);
 
   const ordersPerRiderData = {
     labels: riderNames,
@@ -337,14 +337,14 @@ const Stats = () => {
     return acc;
   }, []);
 
-  console.log(orderSources);
+  //console.log(orderSources);
 
   // find how many orders are from each source
   const orderCountPerSource = orderSources.map((source) => {
     return orders.filter((order) => order.source === source).length;
   });
 
-  console.log(orderCountPerSource);
+  //console.log(orderCountPerSource);
 
   const ordersPerSourceData = {
     labels: orderSources,
