@@ -3,10 +3,9 @@ import React, { useEffect } from "react";
 import { registerCharts } from "../registerCharts";
 import LineChart from "../charts/LineChart";
 import BarChart from "../charts/BarChart";
-import { callback } from "chart.js/helpers";
-import context from "react-bootstrap/esm/AccordionContext";
+import { ArcElement, BarElement, CategoryScale, Chart, Filler, Legend, LineElement, LinearScale, PointElement, RadialLinearScale, Title, Tooltip } from "chart.js";
 
-registerCharts();
+Chart.register(ArcElement, BarElement, CategoryScale, Legend, LineElement, LinearScale, PointElement, Title, Tooltip, RadialLinearScale, Filler);
 
 const Stats = () => {
   const [orders, setOrders] = React.useState([]);
@@ -258,7 +257,7 @@ const Stats = () => {
 
   // using the same index as ridersIds map each riderId to the name of the rider found in rider state array
   const riderNames = riderIds.map((riderId) => {
-    return riders.find((rider) => rider._id === riderId).name;
+    return riders.find((rider) => rider._id === riderId)?.name;
   });
 
   console.log(riderNames);
