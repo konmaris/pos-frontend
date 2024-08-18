@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { registerCharts } from "../registerCharts";
+
 import LineChart from "../charts/LineChart";
 import BarChart from "../charts/BarChart";
 import { ArcElement, BarElement, CategoryScale, Chart, Filler, Legend, LineElement, LinearScale, PointElement, RadialLinearScale, Title, Tooltip } from "chart.js";
