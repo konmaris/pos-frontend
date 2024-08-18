@@ -4,12 +4,15 @@ import React, { useEffect } from "react";
 import LineChart from "../charts/LineChart";
 import BarChart from "../charts/BarChart";
 import { ArcElement, BarElement, CategoryScale, Chart, Filler, Legend, LineElement, LinearScale, PointElement, RadialLinearScale, Title, Tooltip } from "chart.js";
+import { Spinner } from "react-bootstrap";
 
 Chart.register(ArcElement, BarElement, CategoryScale, Legend, LineElement, LinearScale, PointElement, Title, Tooltip, RadialLinearScale, Filler);
 
 const Stats = () => {
   const [orders, setOrders] = React.useState([]);
   const [riders, setRiders] = React.useState([]);
+
+  const [loading, setLoading] = React.useState(true);
 
   const orderCount = orders.length;
   const orderTakeawayCount = orders.filter((order) => order.type === "takeaway").length;
@@ -55,6 +58,7 @@ const Stats = () => {
       .get("https://esp-pos-backend.onrender.com/deliveryBoys")
       .then((res) => {
         setRiders(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -364,29 +368,38 @@ const Stats = () => {
     ],
   };
 
+  // setLoading(false);
+
   useEffect(() => {
     fetchOrders();
     fetchRiders();
   }, []);
 
   return (
-    <div style={{ overflowY: "scroll", maxHeight: "100%" }}>
-      <div style={{ display: "flex", flexDirection: "column", overflowY: "scroll" }}>
-        <BarChart width={"100%"} type="perc_value" totalAmount={orderAmountSum} showLegend={false} title={"Payment method comparison"} data={paymentMethodComparisonData} />
-        {takeawayOrderCountPerInterval.length > 0 && deliveryOrderCountPerInterval.length > 0 && <LineChart title={"Orders per hour"} data={ordersPerHourData} />}
-        {takeawayOrderCountPerInterval.length > 0 && deliveryOrderCountPerInterval.length > 0 && <LineChart type="currency" title={"Revenue per hour"} data={moneySumPerHourData} />}
-        <BarChart width={"100%"} type="number" showLegend={false} title={"Orders per mode"} data={ordersPerModeData} />
-        <div className="d-flex align-items-center justify-content-center">
-          <BarChart width={"50%"} type="number" showLegend={false} title={"Orders per rider"} data={ordersPerRiderData} />
-          <BarChart width={"50%"} type="currency" showLegend={false} title={"Revenue per rider"} data={ordersPerRiderAmountData} />
+    <>
+      {loading ? (
+        <div className="w-100 h-75 d-flex justify-content-center align-items-center">
+          <Spinner animation="border" variant="primary" />
         </div>
-        <BarChart width={"100%"} type="number" showLegend={false} title={"Orders per source"} data={ordersPerSourceData} />
-        <div className="d-flex align-items-center justify-content-center">
-          <BarChart width={"50%"} type="number" showLegend={false} title={"Orders per postal code"} data={ordersPerPostalCodeData} />
-          <BarChart width={"50%"} type="currency" showLegend={false} title={"Revenue per postal code"} data={revenuePerPostalCodeData} />
-        </div>
-      </div>
-      {/* <h2>Total orders: {orderCount}</h2>
+      ) : (
+        <div style={{ overflowY: "scroll", maxHeight: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", overflowY: "scroll" }}>
+            <BarChart width={"100%"} type="perc_value" totalAmount={orderAmountSum} showLegend={false} title={"Payment method comparison"} data={paymentMethodComparisonData} />
+            {takeawayOrderCountPerInterval.length > 0 && deliveryOrderCountPerInterval.length > 0 && <LineChart title={"Orders per hour"} data={ordersPerHourData} />}
+            {takeawayOrderCountPerInterval.length > 0 && deliveryOrderCountPerInterval.length > 0 && <LineChart type="currency" title={"Revenue per hour"} data={moneySumPerHourData} />}
+            <BarChart width={"100%"} type="number" showLegend={false} title={"Orders per mode"} data={ordersPerModeData} />
+            <div className="d-flex align-items-center justify-content-center">
+              <BarChart width={"50%"} type="number" showLegend={false} title={"Orders per rider"} data={ordersPerRiderData} />
+              <BarChart width={"50%"} type="currency" showLegend={false} title={"Revenue per rider"} data={ordersPerRiderAmountData} />
+            </div>
+            <BarChart width={"100%"} type="number" showLegend={false} title={"Orders per source"} data={ordersPerSourceData} />
+            <div className="d-flex align-items-center justify-content-center">
+              <BarChart width={"50%"} type="number" showLegend={false} title={"Orders per postal code"} data={ordersPerPostalCodeData} />
+              <BarChart width={"50%"} type="currency" showLegend={false} title={"Revenue per postal code"} data={revenuePerPostalCodeData} />
+            </div>
+          </div>
+
+          {/* <h2>Total orders: {orderCount}</h2>
       <h2>Takeaway orders: {orderTakeawayCount}</h2>
       <h2>Delivery orders: {orderDeliveryCount}</h2>
       <br />
@@ -396,8 +409,10 @@ const Stats = () => {
       <br />
       <h2>Total cash: {orderCashSum.toFixed(2)}€</h2>
       <h2>Total card: {orderCardSum.toFixed(2)}€</h2> */}
-      {/* <pre>{JSON.stringify(orders, 0, 4)}</pre> */}
-    </div>
+          {/* <pre>{JSON.stringify(orders, 0, 4)}</pre> */}
+        </div>
+      )}
+    </>
   );
 };
 
