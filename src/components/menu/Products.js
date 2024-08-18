@@ -299,7 +299,7 @@ const Products = (props) => {
                 handleAddToCart(currProductObj);
                 handleClose();
               }}
-              style={{ width: "220px", marginLeft: "10px" }}
+              style={{ width: "230px", marginLeft: "10px" }}
             >
               Save Changes
             </Button>

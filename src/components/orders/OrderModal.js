@@ -148,7 +148,7 @@ const OrderModal = (props) => {
     <div>
       <Modal scrollable show={props.show} onHide={handleClose}>
         <Modal.Header className="d-flex">
-          <Modal.Title style={{ flex: 100 }}>Παραγγελία #{order?.dailyOrderNumber}</Modal.Title>
+          <Modal.Title style={{ flex: 100 }}>#{String(order?.dailyOrderNumber).padStart(3, "0")}</Modal.Title>
 
           <Badge className="mx-1" pill bg="primary">
             {props?.status === "ASSIGNED" ? "ASSIGNED" : props?.status === "DELIVERED" ? "DELIVERED" : props?.status === "COMPLETED" ? "COMPLETED" : props?.status === "CANCELLED" ? "CANCELLED" : "NEW ORDER"}

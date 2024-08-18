@@ -7,6 +7,7 @@ import Orders from "./components/orders/Orders";
 import useWakeLock from "react-use-wake-lock";
 import Sidebar from "./components/sidebar/Sidebar";
 import Riders from "./components/riders/Riders";
+import Stats from "./components/stats/Stats";
 
 function App() {
   const { isSupported, isLocked, request, release } = useWakeLock();
@@ -31,7 +32,11 @@ function App() {
             <Menu className="p-3 h-100" style={{ width: "45%" }} />
           </>
         )}
-        {activeView === "stats" && <div className="p-3" style={{ width: "45%" }}></div>}
+        {activeView === "stats" && (
+          <div className="p-3" style={{ width: "45%" }}>
+            <Stats />
+          </div>
+        )}
         {activeView === "dbs" && (
           <div className="p-3" style={{ width: "45%" }}>
             <Riders />
