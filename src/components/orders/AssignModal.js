@@ -39,15 +39,15 @@ const AssignModal = (props) => {
     <div>
       <Modal show={props.show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Ανάθεση παραγγελίας</Modal.Title>
+          <Modal.Title>Assign order</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Label style={{ fontWeight: "600" }}>Επιλέξτε έναν διανομέα</Form.Label>
-          <ReactSelect options={dbs_} onChange={(e) => setDelBoy(e)} placeholder="Επιλέξτε διανομέα..." value={delBoy} />
+          <Form.Label style={{ fontWeight: "600" }}>Select a rider</Form.Label>
+          <ReactSelect options={dbs_} onChange={(e) => setDelBoy(e)} placeholder="Select a rider..." value={delBoy} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" onClick={handleAssign}>
-            Ανάθεση
+            Assign
           </Button>
         </Modal.Footer>
       </Modal>

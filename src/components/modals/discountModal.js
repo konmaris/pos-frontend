@@ -27,12 +27,12 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
 
   useEffect(() => {
     if (source.value === "wolt") {
-      setDiscountReason("Διαφορά είσπραξης");
+      setDiscountReason("Cash collection difference");
       setDiscountFieldDisabled(false);
     }
 
     if (source.value === "telephone" || source.value === "walkin") {
-      setDiscountReason("Ειδική έκπτωση");
+      setDiscountReason("Special discount");
       setDiscountFieldDisabled(false);
     }
   }, [showDiscountModal]);
@@ -53,24 +53,29 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Προσθήκη έκπτωσης</Modal.Title>
+        <Modal.Title>Add discount</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Alert show={discountInvalid} variant="danger">
-            Το ποσό πρέπει να είναι μικρότερο από 10€
+            {/* Το ποσό πρέπει να είναι μικρότερο από 10€ */}
+            The amount must be less than 10€
           </Alert>
           <Alert show={discountExists} variant="danger">
-            Έχει ήδη προστεθεί έκπτωση στο καλάθι
+            {/* Έχει ήδη προστεθεί έκπτωση στο καλάθι */}
+            Discount already exists in cart
           </Alert>
           <Alert show={piniata2Invalid} variant="danger">
-            Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 6€ και πάνω
+            {/* Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 6€ και πάνω */}
+            To apply the discount the cart must be 6€ or more
           </Alert>
           <Alert show={piniata5Invalid} variant="danger">
-            Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 15€ και πάνω
+            {/* Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 15€ και πάνω */}
+            To apply the discount the cart must be 15€ or more
           </Alert>
           <Alert show={piniata7Invalid} variant="danger">
-            Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 20€ και πάνω
+            {/* Για να εφαρμοστεί η έκπτωση το καλάθι πρέπει να είναι από 20€ και πάνω */}
+            To apply the discount the cart must be 20€ or more
           </Alert>
 
           <Form.Group className="mb-3">
@@ -79,42 +84,42 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
                 <>
                   <Button
                     onClick={() => {
-                      setDiscountReason("Τυχερή πεινιάτα 2€");
+                      setDiscountReason("Lucky Piniata 2€");
                       setDiscountText("2.00");
                       setDiscountFieldDisabled(true);
                       setPiniata2Invalid(false);
                       setPiniata5Invalid(false);
                       setPiniata7Invalid(false);
                     }}
-                    variant={discountReason === "Τυχερή πεινιάτα 2€" ? "primary" : "outline-primary"}
+                    variant={discountReason === "Lucky Piniata 2€" ? "primary" : "outline-primary"}
                   >
-                    ΠΕΙΝΙΑΤΑ 2€
+                    PINIATA 2€
                   </Button>
                   <Button
                     onClick={() => {
-                      setDiscountReason("Τυχερή πεινιάτα 5€");
+                      setDiscountReason("Lucky Piniata 5€");
                       setDiscountText("5.00");
                       setDiscountFieldDisabled(true);
                       setPiniata2Invalid(false);
                       setPiniata5Invalid(false);
                       setPiniata7Invalid(false);
                     }}
-                    variant={discountReason === "Τυχερή πεινιάτα 5€" ? "primary" : "outline-primary"}
+                    variant={discountReason === "Lucky Piniata 5€" ? "primary" : "outline-primary"}
                   >
-                    ΠΕΙΝΙΑΤΑ 5€
+                    PINIATA 5€
                   </Button>
                   <Button
                     onClick={() => {
-                      setDiscountReason("Τυχερή πεινιάτα 7€");
+                      setDiscountReason("Lucky Piniata 7€");
                       setDiscountText("7.00");
                       setDiscountFieldDisabled(true);
                       setPiniata2Invalid(false);
                       setPiniata5Invalid(false);
                       setPiniata7Invalid(false);
                     }}
-                    variant={discountReason === "Τυχερή πεινιάτα 7€" ? "primary" : "outline-primary"}
+                    variant={discountReason === "Lucky Piniata 7€" ? "primary" : "outline-primary"}
                   >
-                    ΠΕΙΝΙΑΤΑ 7€
+                    PINIATA 7€
                   </Button>
                 </>
               )}
@@ -122,15 +127,15 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
                 <Button
                   onClick={() => {
                     setDiscountText("");
-                    setDiscountReason("Ειδική έκπτωση");
+                    setDiscountReason("Special discount");
                     setDiscountFieldDisabled(false);
                     setPiniata2Invalid(false);
                     setPiniata5Invalid(false);
                     setPiniata7Invalid(false);
                   }}
-                  variant={discountReason === "Ειδική έκπτωση" ? "primary" : "outline-primary"}
+                  variant={discountReason === "Special discount" ? "primary" : "outline-primary"}
                 >
-                  ΑΛΛΟ
+                  OTHER
                 </Button>
               )}
 
@@ -138,21 +143,21 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
                 <Button
                   onClick={() => {
                     setDiscountText("");
-                    setDiscountReason("Διαφορά είσπραξης");
+                    setDiscountReason("Cash collection difference");
                     setDiscountFieldDisabled(false);
                     setPiniata2Invalid(false);
                     setPiniata5Invalid(false);
                     setPiniata7Invalid(false);
                   }}
-                  variant={discountReason === "Διαφορά είσπραξης" ? "primary" : "outline-primary"}
+                  variant={discountReason === "Cash collection difference" ? "primary" : "outline-primary"}
                 >
-                  ΔΙΑΦΟΡΑ ΕΙΣΠΡΑΞΗΣ
+                  CASH DIFFERENCE
                 </Button>
               )}
             </ButtonGroup>
           </Form.Group>
           <Form.Group className="mb-4" controlId="formBasicEmail">
-            <Form.Label>Ποσό έκπτωσης</Form.Label>
+            <Form.Label>Discount amount</Form.Label>
             <Form.Control
               value={discountText}
               disabled={discountFieldDisabled}
@@ -166,7 +171,7 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
                 }
               }}
               type="text"
-              placeholder="Ποσό"
+              placeholder="Amount"
             />
           </Form.Group>
         </Form>
@@ -187,7 +192,7 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
               setDiscountInvalid(false);
             }}
           >
-            Άκυρο
+            Cancel
           </Button>
           <Button
             variant="success"
@@ -198,16 +203,16 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
                 setDiscountInvalid(true);
               } else {
                 if (!discountExists) {
-                  if (discountReason === "Τυχερή πεινιάτα 2€" || discountReason === "Τυχερή πεινιάτα 5€" || discountReason === "Τυχερή πεινιάτα 7€") {
-                    if (discountReason === "Τυχερή πεινιάτα 2€" && cart.total < 6) {
+                  if (discountReason === "Lucky Piniata 2€" || discountReason === "Lucky Piniata 5€" || discountReason === "Lucky Piniata 7€") {
+                    if (discountReason === "Lucky Piniata 2€" && cart.total < 6) {
                       setPiniata2Invalid(true);
 
                       return;
-                    } else if (discountReason === "Τυχερή πεινιάτα 5€" && cart.total < 15) {
+                    } else if (discountReason === "Lucky Piniata 5€" && cart.total < 15) {
                       setPiniata5Invalid(true);
 
                       return;
-                    } else if (discountReason === "Τυχερή πεινιάτα 7€" && cart.total < 20) {
+                    } else if (discountReason === "Lucky Piniata 7€" && cart.total < 20) {
                       setPiniata7Invalid(true);
 
                       return;
@@ -240,7 +245,7 @@ const DiscountModal = ({ showDiscountModal, setShowDiscountModal, source }) => {
               }
             }}
           >
-            Προσθήκη
+            Add discount
           </Button>
         </div>
       </Modal.Footer>

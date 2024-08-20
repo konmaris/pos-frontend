@@ -19,29 +19,30 @@ const SpecialChargeModal = ({ showSpecialChargeModal, setShowSpecialChargeModal 
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Προσθήκη ειδικής χρέωσης</Modal.Title>
+        <Modal.Title>Add charge</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Alert show={specialChargeInvalid} variant="danger">
-            Το ποσό πρέπει να είναι μικρότερο από 10€
+            {/* Το ποσό πρέπει να είναι μικρότερο από 10€ */}
+            The amount must be less than 10€
           </Alert>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <ButtonGroup className="w-100">
-              <Button onClick={() => setSpecialChargeReason("Κόστος διανομής")} variant={specialChargeReason === "Κόστος διανομής" ? "primary" : "outline-primary"}>
-                ΚΟΣΤΟΣ ΔΙΑΝΟΜΗΣ
+              <Button onClick={() => setSpecialChargeReason("Delivery fee")} variant={specialChargeReason === "Delivery fee" ? "primary" : "outline-primary"}>
+                DELIVERY FEE
               </Button>
-              <Button onClick={() => setSpecialChargeReason("Διαφορά ελάχιστης")} variant={specialChargeReason === "Διαφορά ελάχιστης" ? "primary" : "outline-primary"}>
-                ΔΙΑΦΟΡΑ ΕΛΑΧΙΣΤΗΣ
+              <Button onClick={() => setSpecialChargeReason("Small order surcharge")} variant={specialChargeReason === "Small order surcharge" ? "primary" : "outline-primary"}>
+                SMALL ORDER SURCHARGE
               </Button>
 
-              <Button onClick={() => setSpecialChargeReason("Ειδική χρέωση")} variant={specialChargeReason === "Ειδική χρέωση" ? "primary" : "outline-primary"}>
-                ΑΛΛΟ
+              <Button onClick={() => setSpecialChargeReason("Other")} variant={specialChargeReason === "Other" ? "primary" : "outline-primary"}>
+                OTHER
               </Button>
             </ButtonGroup>
           </Form.Group>
           <Form.Group className="mb-4" controlId="formBasicEmail">
-            <Form.Label>Ποσό</Form.Label>
+            <Form.Label>Amount</Form.Label>
             <Form.Control
               value={specialChargeText}
               isInvalid={specialChargeInvalid}
@@ -54,7 +55,7 @@ const SpecialChargeModal = ({ showSpecialChargeModal, setShowSpecialChargeModal 
                 }
               }}
               type="text"
-              placeholder="Ποσό"
+              placeholder="Amount"
             />
           </Form.Group>
         </Form>
@@ -69,7 +70,7 @@ const SpecialChargeModal = ({ showSpecialChargeModal, setShowSpecialChargeModal 
               setSpecialChargeReason("");
             }}
           >
-            Άκυρο
+            Cancel
           </Button>
           <Button
             variant="success"
@@ -90,7 +91,7 @@ const SpecialChargeModal = ({ showSpecialChargeModal, setShowSpecialChargeModal 
               }
             }}
           >
-            Προσθήκη
+            Add charge
           </Button>
         </div>
       </Modal.Footer>

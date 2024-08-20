@@ -42,7 +42,7 @@ function App() {
             <Riders />
           </div>
         )}
-        {activeView === "user" && <div className="p-3" style={{ width: "45%" }}></div>}
+        {/* {activeView === "user" && <div className="p-3" style={{ width: "45%" }}></div>} */}
 
         <Cart className="p-3" style={{ width: "30%" }} />
       </div>

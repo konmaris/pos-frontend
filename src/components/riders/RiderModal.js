@@ -176,7 +176,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
       <Modal.Header>
         <Modal.Title className="w-100">
           <div className="d-flex">
-            <span style={{ flex: 100 }}>Καρτέλα διανομέα</span>
+            <span style={{ flex: 100 }}>Rider tab</span>
             {riderData.status === "active" && (
               <Button
                 style={{ width: "fit-content", fontSize: 14, fontWeight: 600 }}
@@ -191,7 +191,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
                 }}
                 variant="danger"
               >
-                ΔΙΑΚΟΠΗ ΒΑΡΔΙΑΣ
+                END SHIFT
               </Button>
             )}
             {riderData.status === "inactive" && (
@@ -208,7 +208,7 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
                 }}
                 variant="success"
               >
-                ΕΝΑΡΞΗ ΒΑΡΔΙΑΣ
+                BEGIN SHIFT
               </Button>
             )}
           </div>
@@ -217,16 +217,16 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
       <Modal.Body>
         <Container className="m-0 p-0 mb-3">
           <Row>
-            <Col style={{ fontWeight: 500 }}>Διανομέας:</Col>
+            <Col style={{ fontWeight: 500 }}>Rider name:</Col>
             <Col xs={8}>{riderData?.name}</Col>
           </Row>
           <Row>
-            <Col style={{ fontWeight: 500 }}>Τηλέφωνο:</Col>
+            <Col style={{ fontWeight: 500 }}>Telephone:</Col>
             <Col xs={8}>{riderData?.telephone}</Col>
           </Row>
 
           <Row>
-            <Col style={{ fontWeight: 500 }}>Κατάσταση:</Col>
+            <Col style={{ fontWeight: 500 }}>Status:</Col>
             <Col xs={8}>
               <Badge bg={riderData?.status === "active" ? "success" : "danger"}>{riderData?.status?.toUpperCase()}</Badge>
             </Col>
@@ -235,12 +235,12 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
 
         {(timeDiffHours < 12 || riderData?.status === "active") && (
           <>
-            <h4>Κατάσταση</h4>
+            <h4>Details</h4>
             <Container className="m-0 p-0 mb-3">
               {lastShift?.cashForChange >= 0 && (
                 <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: editCashForChange ? "7px" : "0px", marginBottom: editCashForChange ? "7px" : "0px" }}>
                   <Col xs={4} style={{ fontWeight: 500, backgroundColor: "" }}>
-                    Πάγιο:
+                    Cash for change:
                   </Col>
                   {editCashForChange && riderData?.status === "active" ? (
                     <>
@@ -318,44 +318,44 @@ const RiderModal = ({ show, setShow, rider, setRider }) => {
               )}
               {lastShift?.start && (
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Ώρα έναρξης:</Col>
+                  <Col style={{ fontWeight: 500 }}>Shift start:</Col>
                   <Col xs={8}>{new Date(parseInt(lastShift?.start)).toLocaleTimeString("el-GR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</Col>
                 </Row>
               )}
 
               {lastShift?.end !== null && (
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Ώρα λήξης:</Col>
+                  <Col style={{ fontWeight: 500 }}>Shift end:</Col>
                   <Col xs={8}>{new Date(parseInt(lastShift?.end)).toLocaleTimeString("el-GR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</Col>
                 </Row>
               )}
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Παραγγελίες:</Col>
+                <Col style={{ fontWeight: 500 }}>Orders:</Col>
                 <Col xs={8}>{currentOrders.length}</Col>
               </Row>
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Συν. τζίρος:</Col>
+                <Col style={{ fontWeight: 500 }}>Revenue:</Col>
                 <Col xs={8}>{orderAmountSum.toFixed(2)}€</Col>
               </Row>
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Εισπράξεις:</Col>
+                <Col style={{ fontWeight: 500 }}>Cash collected:</Col>
                 <Col xs={8}>{orderCashSum.toFixed(2)}€</Col>
               </Row>
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Φιλοδωρήματα:</Col>
+                <Col style={{ fontWeight: 500 }}>Tips:</Col>
                 <Col xs={8}>{orderTipSum.toFixed(2)}€</Col>
               </Row>
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Μετρητά:</Col>
+                <Col style={{ fontWeight: 500 }}>Store cash:</Col>
                 <Col xs={8}>{(orderCashSum + parseFloat(cashForChange) - orderTipSum).toFixed(2)}€</Col>
               </Row>
             </Container>
-            {currentOrders.length > 0 && <h4 className="mt-3 mb-3">Παραγγελίες</h4>}
+            {currentOrders.length > 0 && <h4 className="mt-3 mb-3">Orders</h4>}
 
             <ListGroup as="ul">{currentOrdersMap}</ListGroup>
             {/* <pre>{JSON.stringify(currentOrders, 0, 4)}</pre> */}

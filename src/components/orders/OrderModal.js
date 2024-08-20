@@ -61,17 +61,17 @@ const OrderModal = (props) => {
   const getPaymentMethodLabel = (paymentMethod) => {
     switch (paymentMethod) {
       case "cash":
-        return "Μετρητά";
+        return "Cash";
       case "prepaid":
-        return "Προπληρωμένη";
+        return "Prepaid";
       case "card":
-        return "Κάρτα";
+        return "Card";
       case "online":
-        return "Προπληρωμένη";
+        return "Online";
       case "iris":
         return "Iris";
       default:
-        return "Άγνωστο";
+        return "Unknown";
     }
   };
 
@@ -164,22 +164,22 @@ const OrderModal = (props) => {
           <div className="mb-3">
             <Container className="m-0 p-0">
               <Row>
-                <Col style={{ fontWeight: 500 }}>Ώρα παραγγελίας:</Col>
+                <Col style={{ fontWeight: 500 }}>Order time:</Col>
                 <Col xs={7}>{orderTime.toLocaleTimeString("el-GR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</Col>
               </Row>
               <Row>
-                <Col style={{ fontWeight: 500 }}>Ώρα παράδοσης:</Col>
+                <Col style={{ fontWeight: 500 }}>Delivery time:</Col>
                 <Col xs={7}>{deliveryTime.toLocaleTimeString("el-GR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</Col>
               </Row>
 
               <Row>
-                <Col style={{ fontWeight: 500 }}>Τρ. πληρωμής:</Col>
+                <Col style={{ fontWeight: 500 }}>Payment:</Col>
                 <Col xs={7}>{getPaymentMethodLabel(order.paymentMethod)}</Col>
               </Row>
 
               {order?.paymentMethod === "prepaid" && order?.courierTip > 0 && (
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Φιλοδώρημα:</Col>
+                  <Col style={{ fontWeight: 500 }}>Courier tip:</Col>
                   <Col xs={7}>{order.courierTip.toFixed(2)}€</Col>
                 </Row>
               )}
@@ -188,7 +188,7 @@ const OrderModal = (props) => {
                 <>
                   {!editDeliveryBoy ? (
                     <Row className="d-flex align-items-center">
-                      <Col style={{ fontWeight: 500 }}>Διανομέας:</Col>
+                      <Col style={{ fontWeight: 500 }}>Courier:</Col>
                       <Col xs={7} className="d-flex align-items-center">
                         <span style={{ backgroundColor: "", flex: 100 }}>{props?.deliveryBoy}</span>{" "}
                         {order?.status !== "CANCELLED" && order?.status !== "COMPLETED" && (
@@ -210,7 +210,7 @@ const OrderModal = (props) => {
                     </Row>
                   ) : (
                     <Row className="d-flex justify-content-center align-items-center mt-2">
-                      <Col style={{ fontWeight: 500 }}>Διανομέας:</Col>
+                      <Col style={{ fontWeight: 500 }}>Courier:</Col>
                       <Col xs={7} className="d-flex align-items-center" style={{ backgroundColor: "" }}>
                         <div className="w-100" style={{ marginRight: "8px" }}>
                           <ReactSelect
@@ -273,32 +273,32 @@ const OrderModal = (props) => {
 
           {props.type === "delivery" && (
             <div className="mb-3">
-              <p style={{ fontSize: 22, fontWeight: 500 }}>Στοιχεία πελάτη</p>
+              <p style={{ fontSize: 22, fontWeight: 500 }}>Customer details</p>
               <Container className="m-0 p-0">
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Διεύθυνση:</Col>
+                  <Col style={{ fontWeight: 500 }}>Address:</Col>
                   <Col xs={8}>
                     {order?.customer?.street} {order?.customer?.streetNumber}
                   </Col>
                 </Row>
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Ταχ. κώδικας:</Col>
+                  <Col style={{ fontWeight: 500 }}>Postal code:</Col>
                   <Col xs={8}>{order?.customer?.postalCode}</Col>
                 </Row>
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Κουδούνι:</Col>
+                  <Col style={{ fontWeight: 500 }}>Ringbell:</Col>
                   <Col xs={8}>{order?.customer?.doorbell}</Col>
                 </Row>
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Όροφος:</Col>
+                  <Col style={{ fontWeight: 500 }}>Floor:</Col>
                   <Col xs={8}>{order?.customer?.floor}</Col>
                 </Row>
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Τηλέφωνο:</Col>
+                  <Col style={{ fontWeight: 500 }}>Telephone:</Col>
                   <Col xs={8}>{order?.customer?.telephone}</Col>
                 </Row>
                 <Row>
-                  <Col style={{ fontWeight: 500 }}>Σχόλια:</Col>
+                  <Col style={{ fontWeight: 500 }}>Notes:</Col>
                   <Col xs={8}>{order?.customer?.notes}</Col>
                 </Row>
               </Container>
@@ -306,7 +306,7 @@ const OrderModal = (props) => {
           )}
 
           <div className="mb-3">
-            <p style={{ fontSize: 22, fontWeight: 500 }}>Παραγγελία</p>
+            <p style={{ fontSize: 22, fontWeight: 500 }}>Order details</p>
 
             <ul style={{ listStyle: "none", padding: 0, width: "100%" }}>{orderItems}</ul>
           </div>
@@ -325,7 +325,7 @@ const OrderModal = (props) => {
               <div className="d-flex flex-row justify-content-center align-items-center">
                 <XOctagon />
 
-                <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>ΑΚΥΡΩΣΗ</p>
+                <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>CANCEL</p>
               </div>
             </Button>
           )}
@@ -343,7 +343,7 @@ const OrderModal = (props) => {
               <div className="d-flex flex-row justify-content-center align-items-center">
                 <XOctagon />
 
-                <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>ΑΚΥΡΩΣΗ</p>
+                <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>CANCEL</p>
               </div>
             </Button>
           )}
@@ -352,17 +352,16 @@ const OrderModal = (props) => {
             <div className="d-flex flex-row justify-content-center align-items-center">
               <Printer />
 
-              <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>ΕΚΤΥΠΩΣΗ</p>
+              <p style={{ margin: 0, padding: 0, backgroundColor: "", paddingLeft: "6px", fontWeight: 500, fontSize: 14 }}>PRINT</p>
             </div>
           </Button>
           <div style={{ flex: 100, display: "flex", justifyContent: "end", backgroundColor: "" }}>
-            <p style={{ fontSize: 22, fontWeight: 500, backgroundColor: "", padding: 0, margin: 0, paddingRight: "10px" }}>Σύνολο:</p>
+            <p style={{ fontSize: 22, fontWeight: 500, backgroundColor: "", padding: 0, margin: 0, paddingRight: "10px" }}>Total:</p>
             <p style={{ fontSize: 22, fontWeight: 300, backgroundColor: "", textAlign: "", padding: 0, margin: 0 }}>{orderTotal.toFixed(2)}€</p>
           </div>
         </Modal.Footer>
       </Modal>
       <Modal
-        centered
         show={showCancelModal}
         onHide={() => {
           setShowCancelModal(false);
@@ -370,9 +369,9 @@ const OrderModal = (props) => {
         }}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Ακύρωση παραγγελίας</Modal.Title>
+          <Modal.Title>Cancel order</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Είστε σίγουροι πως θέλετε να ακυρώσετε τη παραγγελία;</Modal.Body>
+        <Modal.Body>Are you sure you want to cancel the order?</Modal.Body>
         <Modal.Footer>
           <Button
             variant="outline-secondary"
@@ -381,7 +380,7 @@ const OrderModal = (props) => {
               props.setShow(true);
             }}
           >
-            Όχι
+            No
           </Button>
           <Button
             onClick={() => {
@@ -390,7 +389,7 @@ const OrderModal = (props) => {
             }}
             variant="danger"
           >
-            Ακύρωση
+            Cancel order
           </Button>
         </Modal.Footer>
       </Modal>

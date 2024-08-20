@@ -39,14 +39,14 @@ const Sidebar = (props) => {
           >
             <Bicycle />
           </span>
-          <span
+          {/* <span
             onClick={() => {
               props.setActiveView("user");
             }}
             style={{ ...buttonStyle, backgroundColor: props.activeView === "user" ? "#0d6efd" : "#fff", color: props.activeView === "user" ? "#fff" : "#0d6efd" }}
           >
             {props.activeView === "user" ? <PersonFill /> : <Person />}
-          </span>
+          </span> */}
         </ButtonGroup>
       </div>
     </div>
