@@ -166,9 +166,9 @@ const Products = (props) => {
   });
 
   const extrasCheckboxesRender = currProductObj?.extras?.map((extra) => {
-    return (
-      <div key={extra.name}>
-        {extra.type === "checkbox" ? (
+    if (extra.type === "checkbox") {
+      return (
+        <div key={extra.name}>
           <Form.Check
             type="checkbox"
             label={extra.label + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
@@ -185,10 +185,14 @@ const Products = (props) => {
               });
             }}
           />
-        ) : null}
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return null;
+    }
   });
+
+  console.log(extrasCheckboxesRender);
 
   useEffect(() => {
     const _product = products.filter((product) => product._id === currProduct)[0];
