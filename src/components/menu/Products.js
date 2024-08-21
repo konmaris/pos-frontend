@@ -177,6 +177,8 @@ const Products = (props) => {
               setCurrProductExtras((prev) => {
                 //filter out the previous extra with the same name, if it exists
                 let prev_ = prev.filter((prevExtra) => {
+                  console.log(prevExtra.optionName);
+                  console.log(extra.name);
                   return prevExtra.optionName !== extra.name;
                 });
 
