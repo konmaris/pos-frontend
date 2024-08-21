@@ -53,7 +53,7 @@ const Products = (props) => {
     let extrasCost = 0;
     ////console.log("currProductExtras", currProductExtras);
     currProductExtras.forEach((extra) => {
-      extrasCost += extra.optionPrice;
+      if (extra.optionValue !== false) extrasCost += extra.optionPrice;
     });
 
     // ////console.log("extrasCost", extrasCost);
@@ -101,68 +101,46 @@ const Products = (props) => {
   });
 
   const extrasRender = currProductObj?.extras?.map((extra) => {
-    //make first letter of extra.name capital
-    const extraName = (extra.name = extra.name.charAt(0).toUpperCase() + extra.name.slice(1));
-    return (
-      <div key={extra.name}>
-        {extra.type === "multiple_choice" ? (
-          <>
-            <Form.Label style={{ fontWeight: "600" }}>{extra.label}</Form.Label>
-            <div key="inline-radio" className="mb-3">
-              {extra.options.map((option) => {
-                return (
-                  <Form.Check
-                    onClick={(e) => {
-                      setCurrProductExtras((prev) => {
-                        ////console.log("prev", prev);
-                        //filter out the previous extra with the same name
-                        let prev_ = prev?.filter((prevExtra) => {
-                          return prevExtra.optionName !== extra.name;
-                        });
-
-                        if (option?.cost > 0 || extra.cost > 0) {
-                          prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: option.cost, optionShow: true });
-                        } else {
-                          prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
-                        }
-
-                        return prev_;
+    if (extra.type === "multiple_choice") {
+      return (
+        <div key={extra.name} className="mb-3">
+          <Form.Label style={{ fontWeight: "600" }}>{extra.label}</Form.Label>
+          <div key="inline-radio" className="mb-3">
+            {extra.options.map((option) => {
+              return (
+                <Form.Check
+                  onClick={(e) => {
+                    setCurrProductExtras((prev) => {
+                      ////console.log("prev", prev);
+                      //filter out the previous extra with the same name
+                      let prev_ = prev?.filter((prevExtra) => {
+                        return prevExtra.optionName !== extra.name;
                       });
-                    }}
-                    inline
-                    key={option.label}
-                    type="radio"
-                    label={option.label + (option.cost > 0 ? ` (+${option.cost.toFixed(2)}€)` : "")}
-                    name={extra.name}
-                    id={option.label}
-                  />
-                );
-              })}
-            </div>
-          </>
-        ) : extra.type === "switch" ? (
-          <>
-            <Form.Label style={{ fontWeight: "700" }}>{extra.name + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}</Form.Label>
-            <Form.Check // prettier-ignore
-              type="switch"
-              id="custom-switch"
-              onChange={(e) => {
-                ////console.log(e.target.checked);
-                setCurrProductExtras((prev) => {
-                  let prev_ = prev.filter((prevExtra) => {
-                    //filter array based on optionName
-                    return prevExtra.optionName !== extra.label;
-                  });
 
-                  prev_.push({ optionLabel: e.target.checked, optionValue: e.target.checked, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
-                  return prev_;
-                });
-              }}
-            />
-          </>
-        ) : null}
-      </div>
-    );
+                      if (option?.cost > 0 || extra.cost > 0) {
+                        prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: option.cost, optionShow: true });
+                      } else {
+                        prev_.push({ optionLabel: option.label, optionValue: option.value, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
+                      }
+
+                      return prev_;
+                    });
+                  }}
+                  inline
+                  key={option.label}
+                  type="radio"
+                  label={option.label + (option.cost > 0 ? ` (+${option.cost.toFixed(2)}€)` : "")}
+                  name={extra.name}
+                  id={option.label}
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   });
 
   const extrasCheckboxesRender = currProductObj?.extras?.map((extra) => {
@@ -253,14 +231,16 @@ const Products = (props) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {extrasRender}
-            {extrasCheckboxesRender?.filter((extra) => extra !== null).length > 0 ? (
-              <Form.Label className="mt-3" style={{ fontWeight: "600" }}>
-                Extras
-              </Form.Label>
-            ) : null}
-            {extrasCheckboxesRender}
-            <Form.Label className="mt-3" style={{ fontWeight: "600" }}>
+            {extrasRender?.filter((extra) => extra !== null).length > 0 && extrasRender}
+            <div className="mb-3">
+              {extrasCheckboxesRender?.filter((extra) => extra !== null).length > 0 ? (
+                <Form.Label className="" style={{ fontWeight: "600" }}>
+                  Extras
+                </Form.Label>
+              ) : null}
+              {extrasCheckboxesRender}
+            </div>
+            <Form.Label className="" style={{ fontWeight: "600" }}>
               Comments
             </Form.Label>
             <Form.Control
