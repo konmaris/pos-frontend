@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Products from "./Products";
+import { Navbar } from "react-bootstrap";
 
 const Categories = (props) => {
   // //console.log("props", props);
@@ -16,14 +17,14 @@ const Categories = (props) => {
 
   const categoriesMap = categories.map((category) => {
     return (
-      <Nav.Item style={{ fontSize: 14 }} key={category.name}>
+      <Nav.Item style={{ fontSize: 14, whiteSpace: "nowrap" }} key={category.name}>
         <Nav.Link eventKey={category.name}>{category.label.toUpperCase()}</Nav.Link>
       </Nav.Item>
     );
   });
 
   return (
-    <div className="w-100 h-100">
+    <div className="h-100 w-100">
       <Nav
         variant="pills"
         activeKey={currCategory.name}
@@ -35,9 +36,11 @@ const Categories = (props) => {
         }}
         defaultActiveKey={props.categories[0].name}
         className="mb-4"
+        style={{ overflowX: "auto", overflowY: "hidden", flexWrap: "nowrap" }}
       >
         {categoriesMap}
       </Nav>
+
       <Products category={currCategory._id} />
     </div>
   );
