@@ -177,13 +177,13 @@ const Products = (props) => {
               setCurrProductExtras((prev) => {
                 //filter out the previous extra with the same name, if it exists
                 let prev_ = prev.filter((prevExtra) => {
-                  console.log(prevExtra.optionName);
-                  console.log(extra.name);
+                  //console.log(prevExtra.optionName);
+                  //console.log(extra.name);
                   return prevExtra.optionName !== extra.name;
                 });
 
                 prev_.push({ optionValue: e.target.checked, optionLabel: extra.label, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
-                console.log(prev_);
+                //console.log(prev_);
                 return prev_;
               });
             }}
@@ -195,7 +195,7 @@ const Products = (props) => {
     }
   });
 
-  console.log(extrasCheckboxesRender);
+  //console.log(extrasCheckboxesRender);
 
   useEffect(() => {
     const _product = products.filter((product) => product._id === currProduct)[0];

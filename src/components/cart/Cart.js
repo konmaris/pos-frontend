@@ -139,7 +139,7 @@ const Cart = (props) => {
   }, [cart]);
 
   const cartItems = cart.items?.map((item, idx) => {
-    console.log(item?.extras);
+    // console.log(item?.extras);
     const itemExtras = item.extras?.map((extra, idx) => {
       const extraName = extra.optionName;
       return (
