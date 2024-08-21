@@ -107,7 +107,7 @@ const OrderModal = (props) => {
           {item.comments && (
             <Row>
               <Col style={{ fontWeight: 700, color: "#fff" }}>{item.quantity}x</Col>
-              <Col style={{ fontWeight: 400 }} xs={9}>
+              <Col style={{ fontWeight: 400 }} xs={8}>
                 <span style={{ fontWeight: 500 }}>* {item.comments}</span>
               </Col>
               <Col style={{ textAlign: "right", fontWeight: 600, color: "#fff" }}>{(item.quantity * item.price).toFixed(2)}€</Col>

@@ -101,7 +101,7 @@ const Products = (props) => {
   });
 
   const extrasRender = currProductObj?.extras?.map((extra) => {
-    if (extra.type === "multiple_choice") {
+    if (extra?.type === "multiple_choice") {
       return (
         <div key={extra.name} className="mb-3">
           <Form.Label style={{ fontWeight: "600" }}>{extra.label}</Form.Label>
@@ -146,7 +146,7 @@ const Products = (props) => {
   const extrasCheckboxesRender = currProductObj?.extras?.map((extra) => {
     if (extra.type === "checkbox") {
       return (
-        <div key={extra.name}>
+        <div key={extra.name} className="mb-3">
           <Form.Check
             type="checkbox"
             label={extra.label + (extra.cost > 0 ? ` (+${extra.cost.toFixed(2)}€)` : "")}
@@ -232,14 +232,13 @@ const Products = (props) => {
         <Modal.Body>
           <Form>
             {extrasRender?.filter((extra) => extra !== null).length > 0 && extrasRender}
-            <div className="mb-3">
-              {extrasCheckboxesRender?.filter((extra) => extra !== null).length > 0 ? (
-                <Form.Label className="" style={{ fontWeight: "600" }}>
-                  Extras
-                </Form.Label>
-              ) : null}
-              {extrasCheckboxesRender}
-            </div>
+            {extrasCheckboxesRender?.filter((extra) => extra !== null).length > 0 ? (
+              <Form.Label className="" style={{ fontWeight: "600" }}>
+                Extras
+              </Form.Label>
+            ) : null}
+            {extrasCheckboxesRender}
+
             <Form.Label className="" style={{ fontWeight: "600" }}>
               Comments
             </Form.Label>
