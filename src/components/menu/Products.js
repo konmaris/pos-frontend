@@ -181,6 +181,7 @@ const Products = (props) => {
                 });
 
                 prev_.push({ optionValue: e.target.checked, optionLabel: extra.label, optionName: extra.name, optionPrice: extra.cost, optionShow: extra.showValue });
+                console.log(prev_);
                 return prev_;
               });
             }}
@@ -244,7 +245,7 @@ const Products = (props) => {
 
   return (
     <div className="w-100 h-75">
-      <Modal show={show} onHide={handleClose}>
+      <Modal scrollable show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{currProductObj?.name}</Modal.Title>
         </Modal.Header>
