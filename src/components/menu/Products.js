@@ -247,7 +247,7 @@ const Products = (props) => {
         <Modal.Body>
           <Form>
             {extrasRender}
-            {extrasCheckboxesRender?.length > 0 ? (
+            {extrasCheckboxesRender.filter((extra) => extra !== null).length > 0 ? (
               <Form.Label className="mt-3" style={{ fontWeight: "600" }}>
                 Extras
               </Form.Label>
